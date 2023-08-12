@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Watch-video-App</string>
+    <string name="facebook_app_id">153612764404712</string>
+    <string name="fb_login_protocol_scheme">fb153612764404712</string>
+    <string name="facebook_client_token">6aa6527d32dd58b63b098633bc8755c3</string>
+</resources>
