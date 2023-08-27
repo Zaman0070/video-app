@@ -8,31 +8,48 @@ import 'package:get/get.dart';
 import 'package:video_app/constant/color.dart';
 import 'package:video_app/constant/widget/app_button.dart';
 import 'package:video_app/controller/image_controller.dart';
+import 'package:video_app/controller/video_controller.dart';
 import 'package:video_app/model/video.dart';
 import 'package:video_app/services/firebase_services.dart';
-import 'package:video_player/video_player.dart';
 
-class UploadVideo extends StatefulWidget {
-  const UploadVideo({super.key});
+class EditVideo extends StatefulWidget {
+  final String id;
+  final VideoModel videoModel;
+  const EditVideo({super.key, required this.videoModel, required this.id});
 
   @override
-  State<UploadVideo> createState() => _UploadVideoState();
+  State<EditVideo> createState() => _EditVideoState();
 }
 
-class _UploadVideoState extends State<UploadVideo> {
+class _EditVideoState extends State<EditVideo> {
   ImagePickerController controller = Get.put(ImagePickerController());
   FirebaseServices firebaseServices = FirebaseServices();
-  var titleTextController = TextEditingController();
-  var descriptionTextController = TextEditingController();
+  late var titleTextController =
+      TextEditingController(text: widget.videoModel.title ?? '');
+  late var descriptionTextController =
+      TextEditingController(text: widget.videoModel.description ?? '');
+  late var categoryTextController =
+      TextEditingController(text: widget.videoModel.category ?? '');
+  late var khCategoryTextController =
+      TextEditingController(text: widget.videoModel.categoryKh ?? '');
 
   String videoUrl = '';
   List<String> privacy = ['Public', 'Private'];
-  List<String> paid = ['paid', 'unpaid'];
-
-  String? selectedValue;
+  List<String> category = [
+    'Popular',
+    'All Palm',
+    'Special Palm',
+    'Lesson',
+    'Astrology'
+  ];
   String? englishCategoryValue;
   String? khmerCategoryValue;
-  String? paidValue;
+  List<String> paid = ['paid', 'unpaid'];
+  VideoController videoController = Get.put(VideoController());
+
+  late String? selectedValue = widget.videoModel.privacy!;
+  late String? categoryValue = widget.videoModel.category!;
+  late String? paidValue = widget.videoModel.paid!;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,30 +79,21 @@ class _UploadVideoState extends State<UploadVideo> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    controller.pickedVideo == null
-                        ? box(onTap: () async {
-                            videoUrl = await controller.pickVideo();
-                            print(controller.videoThumbnailUrl);
-                            setState(() {});
-                          })
-                        : Container(
-                            height: 140.h,
-                            width: 1.sw,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10.r),
-                                gradient: const LinearGradient(colors: [
-                                  appColor1,
-                                  appColor2,
-                                ])),
-                            child: AspectRatio(
-                              aspectRatio: controller
-                                  .videoPlayerController.value.aspectRatio,
-                              child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(10.r),
-                                  child: VideoPlayer(
-                                      controller.videoPlayerController)),
-                            ),
-                          ),
+                    Container(
+                      height: 140.h,
+                      width: 1.sw,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image:
+                                NetworkImage(widget.videoModel.thumbnailUrl!),
+                            fit: BoxFit.cover),
+                        borderRadius: BorderRadius.circular(10.r),
+                        gradient: const LinearGradient(colors: [
+                          appColor1,
+                          appColor2,
+                        ]),
+                      ),
+                    ),
                     SizedBox(
                       height: 18.h,
                     ),
@@ -128,6 +136,7 @@ class _UploadVideoState extends State<UploadVideo> {
                       height: 12.h,
                     ),
                     field(
+                        hint: widget.videoModel.privacy!,
                         onTap: (value) {
                           selectedValue = value;
                           setState(() {});
@@ -137,7 +146,15 @@ class _UploadVideoState extends State<UploadVideo> {
                     SizedBox(
                       height: 12.h,
                     ),
-                    Text(' Choose English Category',
+                    Text(' Category',
+                        style: TextStyle(
+                            color: textColor,
+                            fontSize: 18.sp,
+                            fontWeight: FontWeight.w500)),
+                    SizedBox(
+                      height: 12.h,
+                    ),
+                    Text(' Category English',
                         style: TextStyle(
                             color: textColor,
                             fontSize: 18.sp,
@@ -167,16 +184,17 @@ class _UploadVideoState extends State<UploadVideo> {
                               },
                               selectedValue: englishCategoryValue,
                               items: englishCat,
+                              hint: widget.videoModel.category!,
                             );
                           }
                           return const Center(
-                            child: Text('No Category! Please Add Category'),
+                            child: CircularProgressIndicator(),
                           );
                         }),
                     SizedBox(
                       height: 12.h,
                     ),
-                    Text(' Choose Khmer Category',
+                    Text(' Category Khmer',
                         style: TextStyle(
                             color: textColor,
                             fontSize: 18.sp,
@@ -206,13 +224,16 @@ class _UploadVideoState extends State<UploadVideo> {
                               },
                               selectedValue: khmerCategoryValue,
                               items: khmerCat,
+                              hint: widget.videoModel.categoryKh!,
                             );
                           }
                           return const Center(
-                            child: Text('No Category! Please Add Category'),
+                            child: CircularProgressIndicator(),
                           );
                         }),
-                    SizedBox(height: 12.h),
+                    SizedBox(
+                      height: 12.h,
+                    ),
                     Text(' Free/Paid',
                         style: TextStyle(
                             color: textColor,
@@ -222,6 +243,7 @@ class _UploadVideoState extends State<UploadVideo> {
                       height: 12.h,
                     ),
                     field(
+                        hint: widget.videoModel.paid!,
                         onTap: (value) {
                           paidValue = value;
                           setState(() {});
@@ -270,32 +292,26 @@ class _UploadVideoState extends State<UploadVideo> {
                     AppButton(
                         label: 'Publish',
                         onPressed: () async {
-                          titleTextController.text.trim().isNotEmpty &&
-                                  selectedValue != null &&
-                                  paidValue != null &&
-                                  khmerCategoryValue != null &&
-                                  englishCategoryValue != null
-                              ? controller.pickedVideo != null
-                                  ? await firebaseServices.uploadVideo(
-                                      data: VideoModel(
-                                          categoryKh: khmerCategoryValue,
-                                          category: englishCategoryValue,
-                                          description:
-                                              descriptionTextController.text,
-                                          title: titleTextController.text,
-                                          paid: paidValue,
-                                          privacy: selectedValue,
-                                          videoUrl: videoUrl,
-                                          time: DateTime.now()
-                                              .millisecondsSinceEpoch,
-                                          uid: FirebaseAuth
-                                              .instance.currentUser!.uid,
-                                          thumbnailUrl:
-                                              controller.videoThumbnailUrl,
-                                          bookmarks: [],
-                                          watchList: []))
-                                  : Fluttertoast.showToast(
-                                      msg: 'Please select video')
+                          titleTextController.text.trim().isNotEmpty
+                              ? await videoController.updateVideo(
+                                  VideoModel(
+                                      categoryKh: khCategoryTextController.text,
+                                      category: categoryTextController.text,
+                                      description:
+                                          descriptionTextController.text,
+                                      title: titleTextController.text,
+                                      paid: paidValue,
+                                      privacy: selectedValue,
+                                      videoUrl: widget.videoModel.videoUrl!,
+                                      time:
+                                          DateTime.now().millisecondsSinceEpoch,
+                                      uid: FirebaseAuth
+                                          .instance.currentUser!.uid,
+                                      thumbnailUrl:
+                                          widget.videoModel.thumbnailUrl!,
+                                      bookmarks: widget.videoModel.bookmarks,
+                                      watchList: widget.videoModel.watchList),
+                                  widget.id)
                               : Fluttertoast.showToast(
                                   msg: 'All fields are required');
                         }),
@@ -310,16 +326,17 @@ class _UploadVideoState extends State<UploadVideo> {
   Widget field(
       {Function(String?)? onTap,
       required String? selectedValue,
+      required String hint,
       required List<dynamic> items}) {
     return DropdownButtonHideUnderline(
       child: DropdownButton2<String>(
         isExpanded: true,
-        hint: const Row(
+        hint: Row(
           children: [
             Expanded(
               child: Text(
-                'Select Item',
-                style: TextStyle(
+                hint,
+                style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,

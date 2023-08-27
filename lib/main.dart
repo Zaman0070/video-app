@@ -5,6 +5,7 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:video_app/constant/color.dart';
+import 'package:video_app/language/local_string.dart';
 import 'package:video_app/screen/bottom_nav/bottom_nav.dart';
 import 'package:video_app/screen/navigation/navigation.dart';
 import 'package:video_app/services/share_pref.dart';
@@ -14,6 +15,10 @@ void main() async {
   await Firebase.initializeApp();
   OneSignal.shared.setLogLevel(OSLogLevel.verbose, OSLogLevel.none);
   OneSignal.shared.setAppId('66400e53-7ca4-44b9-84bf-7146415c8076');
+  OneSignal.shared.setNotificationWillShowInForegroundHandler(
+      (OSNotificationReceivedEvent event) {
+    event.complete(event.notification);
+  });
   SharePref sharePref = SharePref();
   String? type = await sharePref.getType('login');
   runApp(MyApp(
@@ -33,6 +38,8 @@ class MyApp extends StatelessWidget {
         splitScreenMode: true,
         builder: (context, child) {
           return GetMaterialApp(
+            translations: LocalString(),
+            locale: const Locale('en', 'US'),
             navigatorObservers: [FlutterSmartDialog.observer],
             builder: FlutterSmartDialog.init(),
             debugShowCheckedModeBanner: false,

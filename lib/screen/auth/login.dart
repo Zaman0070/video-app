@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -13,7 +13,6 @@ import 'package:video_app/services/phone_services.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
-
   @override
   State<Login> createState() => _LoginState();
 }
@@ -22,6 +21,7 @@ class _LoginState extends State<Login> {
   var phoneTextController = TextEditingController();
   Authentication authentication = Authentication();
   PhoneService service = PhoneService();
+  CountryCode countryCode = CountryCode(code: 'KH', dialCode: '+855');
 
   @override
   Widget build(BuildContext context) {
@@ -54,20 +54,61 @@ class _LoginState extends State<Login> {
               SizedBox(
                 height: 25.h,
               ),
-              InputField(
-                obsecure: false,
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Required Email';
-                  }
-                  return null;
-                },
-                icon: const Icon(
-                  Icons.phone,
-                  color: Colors.grey,
-                ),
-                controller: phoneTextController,
-                label: 'Phone Number',
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 30),
+                      child: Container(
+                        height: 43.h,
+                        decoration: BoxDecoration(
+                            border: Border.all(color: border),
+                            borderRadius: BorderRadius.circular(12),
+                            color: widgtColor),
+                        child: CountryCodePicker(
+                          padding: EdgeInsets.zero,
+                          flagWidth: 15,
+                          barrierColor: Colors.black.withOpacity(0.5),
+                          onChanged: (CountryCode code) {
+                            setState(() {
+                              countryCode = code;
+                              print(countryCode);
+                            });
+                          },
+                          dialogBackgroundColor: Theme.of(context)
+                              .scaffoldBackgroundColor
+                              .withOpacity(0.5),
+                          initialSelection: 'KH',
+                          favorite: ['+855', 'KH'],
+                          showCountryOnly: false,
+                          showOnlyCountryWhenClosed: false,
+                          alignLeft: false,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 10.w,
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: InputField1(
+                      keyboardType: TextInputType.number,
+                      obsecure: false,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Required Email';
+                        }
+                        return null;
+                      },
+                      controller: phoneTextController,
+                      label: 'Phone Number',
+                    ),
+                  ),
+                ],
               ),
               SizedBox(
                 height: 10.h,
@@ -79,8 +120,10 @@ class _LoginState extends State<Login> {
                 label: 'Login',
                 onPressed: () async {
                   if (phoneTextController.text.trim().isNotEmpty) {
-                    service.verificationPhoneNumber(
-                        context, phoneTextController.text);
+                    String phone = countryCode.toString() +
+                        phoneTextController.text.trim();
+                    print(phone);
+                    await service.verificationPhoneNumber(context, phone);
                   } else {
                     Fluttertoast.showToast(msg: 'Please Enter Phone Number');
                   }

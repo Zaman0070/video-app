@@ -8,9 +8,12 @@ import 'package:video_app/constant/widget/app_button.dart';
 import 'package:video_app/model/user_model.dart';
 import 'package:video_app/screen/auth/login.dart';
 import 'package:video_app/screen/bookmark/bookmark.dart';
+import 'package:video_app/screen/profile/widget/language_bottom.dart';
 import 'package:video_app/screen/profile/widget/profile_box.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:video_app/screen/splash/splash.dart';
+import 'package:video_app/screen/subscription/subscription_page.dart';
+import 'package:video_app/screen/watch_list/watch_list.dart';
 
 class Profile extends StatelessWidget {
   const Profile({super.key});
@@ -21,9 +24,9 @@ class Profile extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           elevation: 0,
-          title: const Text(
-            'Profile',
-            style: TextStyle(color: Colors.white),
+          title: Text(
+            'Profile'.tr,
+            style: const TextStyle(color: Colors.white),
           ),
           centerTitle: true,
         ),
@@ -50,7 +53,7 @@ class Profile extends StatelessWidget {
                     padding: const EdgeInsets.all(18.0),
                     child: Column(children: [
                       SizedBox(
-                        height: 30.h,
+                        height: 20.h,
                       ),
                       Center(
                         child: CircleAvatar(
@@ -78,14 +81,44 @@ class Profile extends StatelessWidget {
                               fontSize: 16.sp,
                               fontWeight: FontWeight.w400)),
                       SizedBox(
-                        height: 50.h,
+                        height: 5.h,
                       ),
                       ProfileBox(
                         onTap: () {
                           Get.to(() => BookMark());
                         },
-                        title: 'Bookmarks',
+                        title: 'Bookmark'.tr,
                         image: 'assets/icons/bookmark.png',
+                      ),
+                      SizedBox(
+                        height: 12.h,
+                      ),
+                      ProfileBox(
+                        onTap: () {
+                          Get.bottomSheet(const LanguageBottom());
+                        },
+                        title: 'Language'.tr,
+                        image: 'assets/icons/translate.png',
+                      ),
+                      SizedBox(
+                        height: 12.h,
+                      ),
+                      ProfileBox(
+                        onTap: () {
+                          Get.to(() => WatchList());
+                        },
+                        title: 'Watch List'.tr,
+                        image: 'assets/icons/history.png',
+                      ),
+                      SizedBox(
+                        height: 12.h,
+                      ),
+                      ProfileBox(
+                        onTap: () async {
+                          Get.to(() => const SubscriptionPage());
+                        },
+                        title: 'Subscription'.tr,
+                        image: 'assets/icons/cash.png',
                       ),
                       SizedBox(
                         height: 12.h,
@@ -95,7 +128,7 @@ class Profile extends StatelessWidget {
                           Share.share(
                               'https://play.google.com/store/apps/details?id=com.theAppForce.videoapp');
                         },
-                        title: 'Share',
+                        title: 'Share'.tr,
                         image: 'assets/icons/send.png',
                       ),
                       SizedBox(
@@ -108,7 +141,7 @@ class Profile extends StatelessWidget {
                             await FirebaseAuth.instance
                                 .signOut()
                                 .whenComplete(() {
-                              Get.offAll(() =>  Splash());
+                              Get.offAll(() => Splash());
                             });
                           },
                           child: Container(
@@ -121,7 +154,7 @@ class Profile extends StatelessWidget {
                             ),
                             child: Center(
                                 child: Text(
-                              'Logout',
+                              'Logout'.tr,
                               style: TextStyle(
                                   color: textColor,
                                   fontSize: 18.sp,
@@ -138,6 +171,9 @@ class Profile extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    const Spacer(
+                      flex: 1,
+                    ),
                     Image.asset(
                       'assets/logo/logo.png',
                       height: 100.h,
@@ -146,10 +182,13 @@ class Profile extends StatelessWidget {
                       height: 50.h,
                     ),
                     AppButton(
-                        label: 'Login',
+                        label: 'Login'.tr,
                         onPressed: () {
                           Get.to(() => const Login());
-                        })
+                        }),
+                    const Spacer(
+                      flex: 2,
+                    ),
                   ],
                 ),
               ));

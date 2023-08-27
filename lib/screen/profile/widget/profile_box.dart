@@ -22,15 +22,15 @@ class ProfileBox extends StatelessWidget {
         child: Row(
           children: [
             Container(
-              height: 50.h,
-              width: 50.h,
+              height: 45.h,
+              width: 45.h,
               decoration: BoxDecoration(
                 color: widgtColor,
                 border: Border.all(color: border),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Padding(
-                padding: const EdgeInsets.all(12.0),
+                padding: const EdgeInsets.all(16.0),
                 child: Image.asset(
                   image,
                   color: textColor,

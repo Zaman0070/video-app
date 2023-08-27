@@ -15,14 +15,14 @@ import 'package:video_app/screen/auth/login.dart';
 import 'package:video_app/screen/home/widget/home_box.dart';
 import 'package:video_app/services/firebase_services.dart';
 
-class BookMark extends StatefulWidget {
-  BookMark({super.key});
+class WatchList extends StatefulWidget {
+  WatchList({super.key});
 
   @override
-  State<BookMark> createState() => _BookMarkState();
+  State<WatchList> createState() => _WatchListState();
 }
 
-class _BookMarkState extends State<BookMark> {
+class _WatchListState extends State<WatchList> {
   String devicId = '';
   void getDevicId() async {
     OSDeviceState? status = await OneSignal.shared.getDeviceState();
@@ -52,16 +52,9 @@ class _BookMarkState extends State<BookMark> {
         title: Row(
           children: [
             Text(
-              'Bookmark'.tr.toUpperCase(),
+              'Watch List'.tr.toUpperCase(),
               style: TextStyle(
                   color: Colors.white,
-                  fontSize: 20.sp,
-                  fontWeight: FontWeight.w500),
-            ),
-            Text(
-              'Videos'.tr.toUpperCase(),
-              style: TextStyle(
-                  color: appColor2,
                   fontSize: 20.sp,
                   fontWeight: FontWeight.w500),
             ),
@@ -71,11 +64,9 @@ class _BookMarkState extends State<BookMark> {
       body: StreamBuilder(
         stream: FirebaseFirestore.instance
             .collection('videos')
-            .where('bookmarks',
-                arrayContains: FirebaseAuth.instance.currentUser == null
-                    ? devicId
-                    : FirebaseAuth.instance.currentUser!.uid)
-            .orderBy('time')
+            .where('watchList',
+                arrayContains: FirebaseAuth.instance.currentUser!.uid)
+            .orderBy('time', descending: true)
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.data == null) {

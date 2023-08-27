@@ -1,9 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
+import 'package:video_app/admin/edit_video.dart/edit_video.dart';
 import 'package:video_app/admin/widget/show_video.dart';
 import 'package:video_app/admin/widget/video_box.dart';
 import 'package:video_app/constant/color.dart';
+import 'package:video_app/constant/widget/loading.dart';
 import 'package:video_app/model/video.dart';
 
 class AllVideo extends StatelessWidget {
@@ -41,6 +44,31 @@ class AllVideo extends StatelessWidget {
               VideoModel videoModel =
                   VideoModel.fromMap(snapshot.data!.docs[index].data());
               return VideoBox(
+                edit: () {
+                  Get.to(() => EditVideo(
+                    id: snapshot.data!.docs[index].id,
+                        videoModel: videoModel,
+                      ));
+                },
+                delete: () async {
+                  SmartDialog.showLoading(
+                    animationBuilder: (controller, child, animationParam) {
+                      return Loading(
+                        text: 'Please wait...',
+                      );
+                    },
+                  );
+                  Future.delayed(
+                    const Duration(seconds: 2),
+                    () async {
+                      SmartDialog.dismiss();
+                      await FirebaseFirestore.instance
+                          .collection('videos')
+                          .doc(snapshot.data!.docs[index].id)
+                          .delete();
+                    },
+                  );
+                },
                 onTap: () {
                   Get.to(() => ShowVideo(
                         videoUrl: videoModel.videoUrl!,

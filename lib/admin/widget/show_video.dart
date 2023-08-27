@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:appinio_video_player/appinio_video_player.dart';
 import 'package:flutter/material.dart';
+import 'package:video_app/helper/ads.dart';
 
 class ShowVideo extends StatefulWidget {
   final String videoUrl;
@@ -16,10 +19,11 @@ class _ShowVideoState extends State<ShowVideo> {
 
   late String videoUrl = widget.videoUrl;
   bool isPlaying = false;
-
+Timer? timer;
   @override
   void initState() {
     super.initState();
+    timer = Timer.periodic(const Duration(seconds: 120), (Timer t) => AdHelper.showRewardedAd(onComplete: (){}));
     videoPlayerController = VideoPlayerController.network(videoUrl)
       ..initialize().then((value) => setState(() {
             isPlaying = true;
@@ -38,6 +42,7 @@ class _ShowVideoState extends State<ShowVideo> {
   @override
   void dispose() {
     _customVideoPlayerController.dispose();
+     timer?.cancel();
     super.dispose();
   }
 
@@ -48,7 +53,9 @@ class _ShowVideoState extends State<ShowVideo> {
         child: isPlaying
             ? CustomVideoPlayer(
                 customVideoPlayerController: _customVideoPlayerController)
-            : const CircularProgressIndicator(),
+            : const CircularProgressIndicator(
+                color: Colors.transparent,
+              ),
       ),
     );
   }

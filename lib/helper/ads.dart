@@ -16,7 +16,7 @@ class AdHelper {
      MyDialogs.showProgress();
 
     InterstitialAd.load(
-      adUnitId: 'ca-app-pub-1724099150923192/5826991149',
+      adUnitId: 'ca-app-pub-1724099150923192/2795248099',
       request: const AdRequest(),
       adLoadCallback: InterstitialAdLoadCallback(
         onAdLoaded: (ad) {
@@ -39,7 +39,8 @@ class AdHelper {
 
   static NativeAd loadNativeAd({required NativeAdController adController}) {
     return NativeAd(
-        adUnitId: 'ca-app-pub-1724099150923192/2795248099',
+             adUnitId: 'ca-app-pub-1724099150923192/2795248099',
+
         listener: NativeAdListener(
           onAdLoaded: (ad) {
             log('$NativeAd loaded.');
@@ -60,7 +61,8 @@ class AdHelper {
   static void showRewardedAd({required VoidCallback onComplete}) {
      MyDialogs.showProgress();
     RewardedAd.load(
-      adUnitId: 'ca-app-pub-1724099150923192/1664384856',
+           adUnitId: 'ca-app-pub-1724099150923192/1664384856',
+
       request: const AdRequest(),
       rewardedAdLoadCallback: RewardedAdLoadCallback(
         onAdLoaded: (ad) {

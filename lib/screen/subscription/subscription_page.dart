@@ -1,0 +1,125 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:video_app/constant/color.dart';
+import 'package:video_app/constant/widget/app_button.dart';
+import 'package:video_app/screen/subscription/payment_page.dart';
+import 'package:video_app/screen/subscription/widget/all_cat_month.dart';
+import 'package:video_app/screen/subscription/widget/single_cat_month.dart';
+
+class SubscriptionPage extends StatefulWidget {
+  const SubscriptionPage({super.key});
+
+  @override
+  State<SubscriptionPage> createState() => _SubscriptionPageState();
+}
+
+class _SubscriptionPageState extends State<SubscriptionPage> {
+  int index = 0;
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: Text(
+          'Subscription'.tr,
+          style: const TextStyle(color: Colors.white),
+        ),
+        centerTitle: true,
+      ),
+      body: StreamBuilder(
+          stream: FirebaseFirestore.instance
+              .collection('price')
+              .doc('w2y1FEwCQ8PkuleHMM3PnI2gSmU2')
+              .snapshots(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return const Center(
+                child: CircularProgressIndicator(
+                  color: appColor1,
+                ),
+              );
+            }
+            if (!snapshot.data!.exists) {
+              return const Center(
+                child: Text('No Data'),
+              );
+            }
+            return Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Column(
+                children: [
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: [
+                      SingleCatMonth(
+                          index: 0,
+                          selectIndex: index,
+                          price: '\$${snapshot.data!['single']}.00 / month',
+                          onTap: () {
+                            setState(() {
+                              index = 0;
+                            });
+                          }),
+                      const SizedBox(
+                        width: 15,
+                      ),
+                      AllCatMonth(
+                          index: 1,
+                          selectIndex: index,
+                          price: '\$${snapshot.data!['all']}.00 / month',
+                          onTap: () {
+                            setState(() {
+                              index = 1;
+                            });
+                          }),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: [
+                      SingleCatMonth(
+                          index: 2,
+                          selectIndex: index,
+                          price: '\$${snapshot.data!['singleYear']}.00 / year',
+                          onTap: () {
+                            setState(() {
+                              index = 2;
+                            });
+                          }),
+                      const SizedBox(
+                        width: 15,
+                      ),
+                      AllCatMonth(
+                          index: 3,
+                          selectIndex: index,
+                          price: '\$${snapshot.data!['allYear']}.00 / year',
+                          onTap: () {
+                            setState(() {
+                              index = 3;
+                            });
+                          }),
+                    ],
+                  ),
+                  const Spacer(),
+                  AppButton(
+                      label: 'Continue'.tr,
+                      onPressed: () {
+                        Get.to(() => const PaymentPage());
+                      }),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                ],
+              ),
+            );
+          }),
+    );
+  }
+}

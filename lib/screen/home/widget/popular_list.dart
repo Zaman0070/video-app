@@ -8,33 +8,29 @@ import 'package:intl/intl.dart';
 import 'package:video_app/admin/widget/show_video.dart';
 import 'package:video_app/constant/color.dart';
 import 'package:video_app/controller/ads_controller.dart';
-import 'package:video_app/controller/language_controller.dart';
 import 'package:video_app/helper/ads.dart';
 import 'package:video_app/model/video.dart';
 import 'package:video_app/screen/auth/login.dart';
 import 'package:video_app/screen/home/widget/home_box.dart';
+import 'package:video_app/screen/subscription/subscription_page.dart';
 import 'package:video_app/services/firebase_services.dart';
 
 // ignore: must_be_immutable
-class VideoList extends StatelessWidget {
-  final String category;
-  final String query;
-  VideoList({super.key, required this.query, required this.category});
+class PopularList extends StatelessWidget {
+  PopularList({
+    super.key,
+  });
 
   final _adController = NativeAdController();
-  final FirebaseServices _firebaseServices = FirebaseServices();
-  LanguageController languageController = Get.put(LanguageController());
+  FirebaseServices _firebaseServices = FirebaseServices();
 
   @override
   Widget build(BuildContext context) {
+    print(DateTime.now().millisecondsSinceEpoch);
     _adController.ad = AdHelper.loadNativeAd(adController: _adController);
 
     return StreamBuilder(
-      stream: FirebaseFirestore.instance
-          .collection('videos')
-          .where(category, isEqualTo: query)
-          .orderBy('time', descending: true)
-          .snapshots(),
+      stream: FirebaseFirestore.instance.collection('videos').snapshots(),
       builder: (context, snapshot) {
         if (snapshot.data == null) {
           return const Center(
@@ -50,11 +46,18 @@ class VideoList extends StatelessWidget {
             ),
           );
         }
+        var videos = snapshot.data!.docs;
+        videos.sort((a, b) {
+          final popularityA = a['watchList'].length;
+          final popularityB = b['watchList'].length;
+          return popularityB
+              .compareTo(popularityA); // Sort in descending order.
+        });
         return ListView.builder(
             padding: EdgeInsets.only(bottom: 70.h, top: 10.h, right: 15.w),
             physics: const ScrollPhysics(),
             shrinkWrap: true,
-            itemCount: snapshot.data!.docs.length,
+            itemCount: videos.length,
             itemBuilder: (context, index) {
               if (index % 6 == 5 && index != 0) {
                 return _adController.ad != null && _adController.adLoaded.isTrue
@@ -62,9 +65,7 @@ class VideoList extends StatelessWidget {
                         height: 130.h, child: AdWidget(ad: _adController.ad!))
                     : Container();
               }
-
-              VideoModel videoModel =
-                  VideoModel.fromMap(snapshot.data!.docs[index].data());
+              VideoModel videoModel = VideoModel.fromMap(videos[index].data());
               DateTime dateTime =
                   DateTime.fromMillisecondsSinceEpoch(videoModel.time!);
               return HomeBox(
@@ -72,19 +73,18 @@ class VideoList extends StatelessWidget {
                 viewCount: videoModel.watchList!.length,
                 id: snapshot.data!.docs[index].id,
                 onTap: () async {
-                  if (videoModel.paid == 'paid' &&
-                      FirebaseAuth.instance.currentUser == null) {
+                  if (FirebaseAuth.instance.currentUser == null) {
                     Get.to(() => const Login());
+                  } else if (videoModel.paid == 'paid') {
+                    Get.to(() => const SubscriptionPage());
                   } else {
                     Get.to(() => ShowVideo(
                           videoUrl: videoModel.videoUrl!,
                         ));
-                    FirebaseAuth.instance.currentUser == null
-                        ? null
-                        : await _firebaseServices.addWatchList(
-                            postId: snapshot.data!.docs[index].id,
-                            uid: FirebaseAuth.instance.currentUser!.uid,
-                            context: context);
+                    await _firebaseServices.addWatchList(
+                        postId: snapshot.data!.docs[index].id,
+                        uid: FirebaseAuth.instance.currentUser!.uid,
+                        context: context);
                     AdHelper.showRewardedAd(onComplete: () {});
                   }
                 },

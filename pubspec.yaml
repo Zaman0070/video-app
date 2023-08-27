@@ -58,8 +58,15 @@ dependencies:
   onesignal_flutter: ^3.3.2
   shared_preferences: ^2.2.0
   flutter_login_facebook: ^1.8.0
-  apple_sign_in_safety: ^0.0.6
   the_apple_sign_in: ^1.1.1
+  delayed_display: ^2.0.0
+  country_code_picker: ^3.0.0
+  pay: ^1.1.2
+  flutter_svg: ^2.0.7
+  url_launcher: ^6.1.12
+  dropdown_textfield: ^1.0.8
+  flutter_stripe: ^9.3.0
+  intl: ^0.18.0
 
 dev_dependencies:
   flutter_test:

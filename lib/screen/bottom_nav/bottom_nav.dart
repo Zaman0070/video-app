@@ -106,7 +106,7 @@ class _BottomBarsState extends State<BottomBars> {
         children: [
           const HomePage(),
           BookMark(),
-          const Profile(),
+           Profile(),
         ],
       ),
     );

@@ -13,6 +13,10 @@ class FirebaseServices {
 
   final CollectionReference usersRef =
       FirebaseFirestore.instance.collection("users");
+  final CollectionReference categoryEng =
+      FirebaseFirestore.instance.collection("categoryEnglish");
+  final CollectionReference categoryKh =
+      FirebaseFirestore.instance.collection("categoryKhmer");
 
   uploadVideo({required VideoModel data}) async {
     try {
@@ -32,21 +36,74 @@ class FirebaseServices {
     }
   }
 
-  bookmarkData({required VideoModel data}) async {
+  Future<void> addWatchList({
+    required String postId,
+    required String uid,
+    required BuildContext context,
+  }) async {
+    SmartDialog.showLoading(
+      animationBuilder: (controller, child, animationParam) {
+        return Loading(
+          text: 'Please wait...',
+        );
+      },
+    );
+    DocumentSnapshot snap =
+        await FirebaseFirestore.instance.collection('videos').doc(postId).get();
+    List bookmark = (snap.data() as dynamic)['bookmarks'];
     try {
-      SmartDialog.showLoading(
-        animationBuilder: (controller, child, animationParam) {
-          return Loading(
-            text: 'Please wait...',
-          );
-        },
-      );
-      await bookmark.doc().set(data.toMap()).then((value) {
-        Get.back();
+      if (bookmark.contains(uid)) {
+        FirebaseFirestore.instance.collection('videos').doc(postId).update({
+          'watchList': FieldValue.arrayRemove([uid])
+        });
         SmartDialog.dismiss();
-      });
-    } catch (e) {
-      print(e);
+      } else {
+        FirebaseFirestore.instance.collection('videos').doc(postId).update({
+          'watchList': FieldValue.arrayUnion([uid])
+        });
+        SmartDialog.dismiss();
+      }
+    } catch (err) {
+      err.toString();
+    }
+  }
+
+  Future<void> addCategoryEng({
+    required String uid,
+    required String categoryText,
+    required BuildContext context,
+  }) async {
+    DocumentSnapshot snap = await categoryEng.doc(uid).get();
+    List categories = (snap.data() as dynamic)['category'];
+    try {
+      if (categories.contains(categoryText)) {
+        return;
+      } else {
+        categoryEng.doc(uid).update({
+          'category': FieldValue.arrayUnion([categoryText])
+        });
+      }
+    } catch (err) {
+      err.toString();
+    }
+  }
+  Future<void> addCategoryKh({
+    required String uid,
+    required String categoryText,
+    required BuildContext context,
+  }) async {
+    DocumentSnapshot snap = await categoryKh.doc(uid).get();
+    List categories = (snap.data() as dynamic)['category'];
+    try {
+      if (categories.contains(categoryText)) {
+        return;
+      } else {
+        categoryKh.doc(uid).update({
+          'category': FieldValue.arrayUnion([categoryText])
+        });
+      }
+    } catch (err) {
+      err.toString();
     }
   }
 
