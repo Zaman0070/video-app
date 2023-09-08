@@ -35,13 +35,6 @@ class _EditVideoState extends State<EditVideo> {
 
   String videoUrl = '';
   List<String> privacy = ['Public', 'Private'];
-  List<String> category = [
-    'Popular',
-    'All Palm',
-    'Special Palm',
-    'Lesson',
-    'Astrology'
-  ];
   String? englishCategoryValue;
   String? khmerCategoryValue;
   List<String> paid = ['paid', 'unpaid'];

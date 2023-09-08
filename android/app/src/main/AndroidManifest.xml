@@ -21,7 +21,7 @@
 
 
     <application
-        android:label="video_app"
+        android:label="Meta Cambodia"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
