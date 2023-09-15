@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:video_app/admin/admin_home.dart';
-import 'package:video_app/screen/splash/splash.dart';
+import 'package:video_app/screen/bottom_nav/bottom_nav.dart';
 
 class Navigations extends StatelessWidget {
   const Navigations({super.key});
@@ -11,7 +11,7 @@ class Navigations extends StatelessWidget {
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
         if (snapshot.data == null) {
-          return Splash();
+          return const BottomBars();
         }
 
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -23,7 +23,7 @@ class Navigations extends StatelessWidget {
           return const AdminHome();
         }
 
-        return Splash();
+        return const BottomBars();
       },
     );
   }

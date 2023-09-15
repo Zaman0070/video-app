@@ -17,8 +17,12 @@ import 'package:video_app/services/firebase_services.dart';
 
 // ignore: must_be_immutable
 class PopularList extends StatelessWidget {
+  final String category;
+  final String query;
   PopularList({
     super.key,
+    required this.category,
+    required this.query,
   });
 
   final _adController = NativeAdController();
@@ -30,7 +34,13 @@ class PopularList extends StatelessWidget {
     _adController.ad = AdHelper.loadNativeAd(adController: _adController);
 
     return StreamBuilder(
-      stream: FirebaseFirestore.instance.collection('videos').snapshots(),
+      stream: query == 'Papular'
+          ? FirebaseFirestore.instance.collection('videos').snapshots()
+          : FirebaseFirestore.instance
+              .collection('videos')
+              .where(category, isEqualTo: query)
+              .orderBy('time', descending: true)
+              .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.data == null) {
           return const Center(
@@ -71,21 +81,23 @@ class PopularList extends StatelessWidget {
               return HomeBox(
                 creatTime: DateFormat('dd, MMM yyyy').format(dateTime),
                 viewCount: videoModel.watchList!.length,
-                id: snapshot.data!.docs[index].id,
+                id: videos.elementAt(index).id,
                 onTap: () async {
-                  if (FirebaseAuth.instance.currentUser == null) {
-                    Get.to(() => const Login());
-                  } else if (videoModel.paid == 'paid') {
-                    Get.to(() => const SubscriptionPage());
-                  } else {
+                  if (videoModel.paid == 'unpaid') {
                     Get.to(() => ShowVideo(
                           videoUrl: videoModel.videoUrl!,
                         ));
                     await _firebaseServices.addWatchList(
-                        postId: snapshot.data!.docs[index].id,
+                        postId: videos.elementAt(index).id,
                         uid: FirebaseAuth.instance.currentUser!.uid,
                         context: context);
                     AdHelper.showRewardedAd(onComplete: () {});
+                  } else if (videoModel.paid == 'paid') {
+                    if (FirebaseAuth.instance.currentUser == null) {
+                      Get.to(() => const Login());
+                    } else {
+                      Get.to(() => const SubscriptionPage());
+                    }
                   }
                 },
                 videoModel: videoModel,

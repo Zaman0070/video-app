@@ -8,7 +8,6 @@ import 'package:get/get.dart';
 import 'package:video_app/constant/color.dart';
 import 'package:video_app/controller/language_controller.dart';
 import 'package:video_app/screen/home/widget/popular_list.dart';
-import 'package:video_app/screen/home/widget/video_list.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -54,6 +53,7 @@ class _HomePageState extends State<HomePage> {
       ),
       body: StreamBuilder(
           stream: FirebaseFirestore.instance
+              // ignore: unrelated_type_equality_checks
               .collection(languageController.language == 0
                   ? 'categoryEnglish'
                   : 'categoryKhmer')
@@ -72,15 +72,13 @@ class _HomePageState extends State<HomePage> {
             ];
             List<Widget> tabView = [
               for (var i = 0; i < data.length; i++)
-                i == 0
-                    ? PopularList()
-                    : VideoList(
-                        // ignore: unrelated_type_equality_checks
-                        category: languageController.language == 0
-                            ? 'category'
-                            : 'categoryKh',
-                        query: data[i],
-                      )
+                PopularList(
+                  //   ignore: unrelated_type_equality_checks
+                  category: languageController.language == 0
+                      ? 'category'
+                      : 'categoryKh',
+                  query: data[i],
+                )
             ];
             log(data.toString());
             return DefaultTabController(

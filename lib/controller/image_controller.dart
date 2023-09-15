@@ -94,7 +94,8 @@ class ImagePickerController extends GetxController {
   ///// video /////
   ///
   getThumbnail(File videoPath) async {
-    final getthumbnail = await VideoCompress.getFileThumbnail(videoPath.path);
+    final getthumbnail =
+        await VideoCompress.getFileThumbnail(videoPath.path, quality: 100);
     return getthumbnail;
   }
 

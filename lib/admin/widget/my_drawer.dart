@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:video_app/admin/change_price/change_price.dart';
 import 'package:video_app/admin/delet_category.dart/delet_category.dart';
-import 'package:video_app/screen/splash/splash.dart';
+import 'package:video_app/screen/bottom_nav/bottom_nav.dart';
 
 class MyDrawer extends StatelessWidget {
   const MyDrawer({super.key});
@@ -74,7 +74,7 @@ class MyDrawer extends StatelessWidget {
             InkWell(
               onTap: () async {
                 await FirebaseAuth.instance.signOut().whenComplete(() {
-                  Get.offAll(() => Splash());
+                  Get.offAll(() => const BottomBars());
                 });
               },
               child: Text(

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -96,6 +98,7 @@ class _HomeBoxState extends State<HomeBox> {
                                 : Colors.white,
                           ),
                           onPressed: () async {
+                            log(widget.id);
                             OSDeviceState? status =
                                 await OneSignal.shared.getDeviceState();
                             // ignore: use_build_context_synchronously

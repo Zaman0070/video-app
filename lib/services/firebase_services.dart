@@ -50,12 +50,9 @@ class FirebaseServices {
     );
     DocumentSnapshot snap =
         await FirebaseFirestore.instance.collection('videos').doc(postId).get();
-    List bookmark = (snap.data() as dynamic)['bookmarks'];
+    List bookmark = (snap.data() as dynamic)['watchList'];
     try {
       if (bookmark.contains(uid)) {
-        FirebaseFirestore.instance.collection('videos').doc(postId).update({
-          'watchList': FieldValue.arrayRemove([uid])
-        });
         SmartDialog.dismiss();
       } else {
         FirebaseFirestore.instance.collection('videos').doc(postId).update({
@@ -87,6 +84,7 @@ class FirebaseServices {
       err.toString();
     }
   }
+
   Future<void> addCategoryKh({
     required String uid,
     required String categoryText,

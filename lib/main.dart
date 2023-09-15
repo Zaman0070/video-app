@@ -6,7 +6,6 @@ import 'package:get/get.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:video_app/constant/color.dart';
 import 'package:video_app/language/local_string.dart';
-import 'package:video_app/screen/bottom_nav/bottom_nav.dart';
 import 'package:video_app/screen/navigation/navigation.dart';
 import 'package:video_app/services/share_pref.dart';
 
@@ -52,6 +51,6 @@ class MyApp extends StatelessWidget {
             home: child,
           );
         },
-        child: type == 'user' ? const BottomBars() : const Navigations());
+        child: const Navigations());
   }
 }
