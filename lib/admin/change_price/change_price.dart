@@ -93,7 +93,7 @@ class _ChangePriceState extends State<ChangePrice> {
                       );
                       await FirebaseFirestore.instance
                           .collection('price')
-                          .doc('w2y1FEwCQ8PkuleHMM3PnI2gSmU2')
+                          .doc('ehEWIZZymdNkj7UZz2CM9L7zBUd2')
                           .update({'all': allPriceTextController.text});
                       SmartDialog.dismiss();
                       Get.back();
@@ -171,7 +171,7 @@ class _ChangePriceState extends State<ChangePrice> {
                       );
                       await FirebaseFirestore.instance
                           .collection('price')
-                          .doc('w2y1FEwCQ8PkuleHMM3PnI2gSmU2')
+                          .doc('ehEWIZZymdNkj7UZz2CM9L7zBUd2')
                           .update({'allYear': yallPriceTextController.text});
                       SmartDialog.dismiss();
                       Get.back();
@@ -249,7 +249,7 @@ class _ChangePriceState extends State<ChangePrice> {
                       );
                       await FirebaseFirestore.instance
                           .collection('price')
-                          .doc('w2y1FEwCQ8PkuleHMM3PnI2gSmU2')
+                          .doc('ehEWIZZymdNkj7UZz2CM9L7zBUd2')
                           .update({'single': singPriceTextController.text});
                       SmartDialog.dismiss();
                       Get.back();
@@ -327,7 +327,7 @@ class _ChangePriceState extends State<ChangePrice> {
                       );
                       await FirebaseFirestore.instance
                           .collection('price')
-                          .doc('w2y1FEwCQ8PkuleHMM3PnI2gSmU2')
+                          .doc('ehEWIZZymdNkj7UZz2CM9L7zBUd2')
                           .update(
                               {'singleYear': ysingPriceTextController.text});
                       SmartDialog.dismiss();

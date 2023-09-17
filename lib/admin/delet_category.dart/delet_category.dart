@@ -24,7 +24,7 @@ class _DeleteCategoryState extends State<DeleteCategory> {
 
   CollectionReference collection =
       FirebaseFirestore.instance.collection('categoryKhmer');
-  String documentId = 'w2y1FEwCQ8PkuleHMM3PnI2gSmU2';
+  String documentId = 'ehEWIZZymdNkj7UZz2CM9L7zBUd2';
   String arrayFieldName = 'category';
   List<dynamic> arrayData = [];
   FirebaseServices firebaseServices = FirebaseServices();
@@ -198,7 +198,7 @@ class _DeleteCategoryState extends State<DeleteCategory> {
                 child: StreamBuilder(
                   stream: FirebaseFirestore.instance
                       .collection('categoryEnglish')
-                      .doc('w2y1FEwCQ8PkuleHMM3PnI2gSmU2')
+                      .doc('ehEWIZZymdNkj7UZz2CM9L7zBUd2')
                       .snapshots(),
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) {
@@ -237,14 +237,14 @@ class _DeleteCategoryState extends State<DeleteCategory> {
                               );
                               await FirebaseFirestore.instance
                                   .collection('categoryEnglish')
-                                  .doc('w2y1FEwCQ8PkuleHMM3PnI2gSmU2')
+                                  .doc('ehEWIZZymdNkj7UZz2CM9L7zBUd2')
                                   .update({
                                 'category':
                                     FieldValue.arrayRemove([category[index]])
                               });
                               await FirebaseFirestore.instance
                                   .collection('categoryKhmer')
-                                  .doc('w2y1FEwCQ8PkuleHMM3PnI2gSmU2')
+                                  .doc('ehEWIZZymdNkj7UZz2CM9L7zBUd2')
                                   .update({
                                 'category':
                                     FieldValue.arrayRemove([arrayData[index]])

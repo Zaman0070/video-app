@@ -1,36 +1,26 @@
 {
   "project_info": {
-    "project_number": "1032397323736",
-    "project_id": "video-app-f8b3a",
-    "storage_bucket": "video-app-f8b3a.appspot.com"
+    "project_number": "749566721744",
+    "project_id": "video-app-eea5a",
+    "storage_bucket": "video-app-eea5a.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1032397323736:android:969dcdda3a26035f9a06ad",
+        "mobilesdk_app_id": "1:749566721744:android:2cd5afcc93dad30e6268d5",
         "android_client_info": {
           "package_name": "com.theAppForce.videoapp"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "1032397323736-a0poj9hcukkri1qlk58cl31j0jfhdcer.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDjpZ69wRKL64pvTspvLkmdX0arftHr94E"
+          "current_key": "AIzaSyASD6G6zQbOFHHvoQYd14LiWNH00PeMdZw"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "1032397323736-a0poj9hcukkri1qlk58cl31j0jfhdcer.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

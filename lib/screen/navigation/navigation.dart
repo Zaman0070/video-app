@@ -19,7 +19,7 @@ class Navigations extends StatelessWidget {
             child: CircularProgressIndicator(),
           );
         }
-        if (snapshot.data!.uid == 'w2y1FEwCQ8PkuleHMM3PnI2gSmU2') {
+        if (snapshot.data!.uid == 'ehEWIZZymdNkj7UZz2CM9L7zBUd2') {
           return const AdminHome();
         }
 

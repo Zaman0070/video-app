@@ -87,10 +87,12 @@ class PopularList extends StatelessWidget {
                     Get.to(() => ShowVideo(
                           videoUrl: videoModel.videoUrl!,
                         ));
-                    await _firebaseServices.addWatchList(
-                        postId: videos.elementAt(index).id,
-                        uid: FirebaseAuth.instance.currentUser!.uid,
-                        context: context);
+                    FirebaseAuth.instance.currentUser != null
+                        ? await _firebaseServices.addWatchList(
+                            postId: videos.elementAt(index).id,
+                            uid: FirebaseAuth.instance.currentUser!.uid,
+                            context: context)
+                        : null;
                     AdHelper.showRewardedAd(onComplete: () {});
                   } else if (videoModel.paid == 'paid') {
                     if (FirebaseAuth.instance.currentUser == null) {

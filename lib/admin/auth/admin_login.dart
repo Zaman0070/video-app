@@ -91,7 +91,8 @@ class _AdminLoginState extends State<AdminLogin> {
                 onPressed: () async {
                   if (emailTextController.text.trim().isNotEmpty &&
                       passwordTextController.text.trim().isNotEmpty) {
-                    emailTextController.text == 'video@admin.com'
+                    emailTextController.text == 'Measacademy@gmail.com' ||
+                            emailTextController.text == 'measacademy@gmail.com'
                         ? authentication.adminLogin(
                             emailTextController.text,
                             passwordTextController.text,
