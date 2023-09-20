@@ -72,7 +72,7 @@ class PopularList extends StatelessWidget {
               if (index % 6 == 5 && index != 0) {
                 return _adController.ad != null && _adController.adLoaded.isTrue
                     ? SizedBox(
-                        height: 130.h, child: AdWidget(ad: _adController.ad!))
+                        height: 70.h, child: AdWidget(ad: _adController.ad!))
                     : Container();
               }
               VideoModel videoModel = VideoModel.fromMap(videos[index].data());

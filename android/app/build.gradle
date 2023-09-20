@@ -83,10 +83,17 @@ flutter {
 
 dependencies {
     implementation 'com.facebook.android:facebook-login:latest.release'
+    implementation 'com.google.android.play:integrity:1.2.0'
+    implementation 'com.google.android.gms:play-services-ads-identifier:18.0.1'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation platform('com.google.firebase:firebase-bom:31.5.0')
+    implementation 'com.google.android.gms:play-services-gcm:17.0.0'
     implementation 'com.google.android.gms:play-services-base:17.6.0'
+    implementation 'com.google.android.gms:play-services-ads:21.5.0'
     implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation 'com.google.android.material:material:1.8.0-alpha01'
+    def multidex_version = "2.0.1"
+    implementation "androidx.multidex:multidex:$multidex_version"
     implementation('com.google.firebase:firebase-auth') {
         exclude module: "play-services-safetynet"
     }

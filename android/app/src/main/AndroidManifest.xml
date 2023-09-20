@@ -21,7 +21,7 @@
 
 
     <application
-        android:label="Meta Cambodia"
+        android:label="Meas Meta"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

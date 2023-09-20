@@ -19,21 +19,37 @@ class _ShowVideoState extends State<ShowVideo> {
 
   late String videoUrl = widget.videoUrl;
   bool isPlaying = false;
-Timer? timer;
+  Timer? timer;
+  int adCount = 0;
   @override
   void initState() {
     super.initState();
-    timer = Timer.periodic(const Duration(seconds: 120), (Timer t) => AdHelper.showRewardedAd(onComplete: (){}));
+    timer = Timer.periodic(const Duration(seconds: 150), (Timer t) {
+      if (adCount < 3) {
+        setState(() {
+          videoPlayerController.pause();
+        });
+        AdHelper.showRewardedAd(onComplete: () {
+          setState(() {
+            videoPlayerController.play();
+          });
+        });
+        adCount++;
+      } else {
+        t.cancel();
+      }
+    });
     videoPlayerController = VideoPlayerController.network(videoUrl)
       ..initialize().then((value) => setState(() {
             isPlaying = true;
           }));
     _customVideoPlayerController = CustomVideoPlayerController(
       customVideoPlayerSettings: const CustomVideoPlayerSettings(
+          showDurationPlayed: true,
           customVideoPlayerProgressBarSettings:
               CustomVideoPlayerProgressBarSettings(
-        showProgressBar: true,
-      )),
+            showProgressBar: true,
+          )),
       context: context,
       videoPlayerController: videoPlayerController,
     );
@@ -42,7 +58,7 @@ Timer? timer;
   @override
   void dispose() {
     _customVideoPlayerController.dispose();
-     timer?.cancel();
+    timer?.cancel();
     super.dispose();
   }
 

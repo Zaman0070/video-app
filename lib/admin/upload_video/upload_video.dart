@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -5,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:video_app/constant/color.dart';
 import 'package:video_app/constant/widget/app_button.dart';
 import 'package:video_app/controller/image_controller.dart';
@@ -26,6 +29,8 @@ class _UploadVideoState extends State<UploadVideo> {
   var descriptionTextController = TextEditingController();
 
   String videoUrl = '';
+  List thumbnail = [];
+
   List<String> privacy = ['Public', 'Private'];
   List<String> paid = ['paid', 'unpaid'];
 
@@ -69,7 +74,7 @@ class _UploadVideoState extends State<UploadVideo> {
                             setState(() {});
                           })
                         : Container(
-                            height: 140.h,
+                            height: 100.h,
                             width: 1.sw,
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10.r),
@@ -84,6 +89,34 @@ class _UploadVideoState extends State<UploadVideo> {
                                   borderRadius: BorderRadius.circular(10.r),
                                   child: VideoPlayer(
                                       controller.videoPlayerController)),
+                            ),
+                          ),
+                    SizedBox(
+                      height: 10.h,
+                    ),
+                    controller.pickedFile == null
+                        ? boxThumnail(
+                            onTap: () async {
+                              thumbnail = await controller
+                                  .pickImage(ImageSource.gallery);
+                              setState(() {});
+                            },
+                          )
+                        : Container(
+                            height: 100.h,
+                            width: 1.sw,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10.r),
+                                gradient: const LinearGradient(colors: [
+                                  appColor1,
+                                  appColor2,
+                                ])),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10.r),
+                              child: Image.file(
+                                File(controller.pickedFile!.path),
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
                     SizedBox(
@@ -290,8 +323,9 @@ class _UploadVideoState extends State<UploadVideo> {
                                               .millisecondsSinceEpoch,
                                           uid: FirebaseAuth
                                               .instance.currentUser!.uid,
-                                          thumbnailUrl:
-                                              controller.videoThumbnailUrl,
+                                          thumbnailUrl: thumbnail.isEmpty
+                                              ? controller.videoThumbnailUrl
+                                              : thumbnail[0],
                                           bookmarks: [],
                                           watchList: []))
                                   : Fluttertoast.showToast(
@@ -397,7 +431,7 @@ class _UploadVideoState extends State<UploadVideo> {
     return InkWell(
       onTap: onTap,
       child: Container(
-        height: 140.h,
+        height: 100.h,
         width: 1.sw,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10.r),
@@ -409,8 +443,41 @@ class _UploadVideoState extends State<UploadVideo> {
           children: [
             Image.asset(
               'assets/icons/video.png',
-              height: 100.h,
+              height: 70.h,
               color: Colors.white,
+            ),
+            Text(
+              'Upload New Video',
+              style: TextStyle(color: textColor, fontSize: 18.sp),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget boxThumnail({Function()? onTap}) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        height: 100.h,
+        width: 1.sw,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10.r),
+            gradient: const LinearGradient(colors: [
+              appColor1,
+              appColor2,
+            ])),
+        child: Column(
+          children: [
+            SizedBox(height: 10.h),
+            Image.asset(
+              'assets/icons/picture.png',
+              height: 40.h,
+              color: Colors.white,
+            ),
+            SizedBox(
+              height: 16.h,
             ),
             Text(
               'Upload New Video',

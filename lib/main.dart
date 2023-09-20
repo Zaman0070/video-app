@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
             navigatorObservers: [FlutterSmartDialog.observer],
             builder: FlutterSmartDialog.init(),
             debugShowCheckedModeBanner: false,
-            title: 'First Method',
+            title: 'Meas Meta',
             theme: ThemeData(
               scaffoldBackgroundColor: background,
               primarySwatch: primaryswatch,
