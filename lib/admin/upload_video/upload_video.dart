@@ -480,7 +480,7 @@ class _UploadVideoState extends State<UploadVideo> {
               height: 16.h,
             ),
             Text(
-              'Upload New Video',
+              'Upload Video Thumbnail',
               style: TextStyle(color: textColor, fontSize: 18.sp),
             ),
           ],
