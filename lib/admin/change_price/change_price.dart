@@ -116,81 +116,81 @@ class _ChangePriceState extends State<ChangePrice> {
               const SizedBox(
                 height: 20,
               ),
-              const Text(
-                'All Category Price year',
-                style: TextStyle(
-                    color: textColor,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              SizedBox(
-                height: 45.h,
-                child: TextFormField(
-                  keyboardType: TextInputType.number,
-                  controller: yallPriceTextController,
-                  decoration: InputDecoration(
-                    hintText: 'Enter All Category Price',
-                    hintStyle: TextStyle(
-                        color: textColor,
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w300),
-                    fillColor: widgtColor,
-                    filled: true,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.r),
-                      borderSide: const BorderSide(color: border),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.r),
-                      borderSide: const BorderSide(color: border),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.r),
-                      borderSide: const BorderSide(color: border),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  InkWell(
-                    onTap: () async {
-                      SmartDialog.showLoading(
-                        animationBuilder: (controller, child, animationParam) {
-                          return Loading(
-                            text: 'Please wait...',
-                          );
-                        },
-                      );
-                      await FirebaseFirestore.instance
-                          .collection('price')
-                          .doc('ehEWIZZymdNkj7UZz2CM9L7zBUd2')
-                          .update({'allYear': yallPriceTextController.text});
-                      SmartDialog.dismiss();
-                      Get.back();
-                    },
-                    child: Container(
-                      height: 30.h,
-                      width: 100.w,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10.r),
-                        gradient: const LinearGradient(colors: [
-                          appColor1,
-                          appColor2,
-                        ]),
-                      ),
-                      child: const Center(child: Text('Update')),
-                    ),
-                  ),
-                ],
-              ),
+              // const Text(
+              //   'All Category Price year',
+              //   style: TextStyle(
+              //       color: textColor,
+              //       fontSize: 18,
+              //       fontWeight: FontWeight.w500),
+              // ),
+              // const SizedBox(
+              //   height: 20,
+              // ),
+              // SizedBox(
+              //   height: 45.h,
+              //   child: TextFormField(
+              //     keyboardType: TextInputType.number,
+              //     controller: yallPriceTextController,
+              //     decoration: InputDecoration(
+              //       hintText: 'Enter All Category Price',
+              //       hintStyle: TextStyle(
+              //           color: textColor,
+              //           fontSize: 14.sp,
+              //           fontWeight: FontWeight.w300),
+              //       fillColor: widgtColor,
+              //       filled: true,
+              //       border: OutlineInputBorder(
+              //         borderRadius: BorderRadius.circular(10.r),
+              //         borderSide: const BorderSide(color: border),
+              //       ),
+              //       enabledBorder: OutlineInputBorder(
+              //         borderRadius: BorderRadius.circular(10.r),
+              //         borderSide: const BorderSide(color: border),
+              //       ),
+              //       focusedBorder: OutlineInputBorder(
+              //         borderRadius: BorderRadius.circular(10.r),
+              //         borderSide: const BorderSide(color: border),
+              //       ),
+              //     ),
+              //   ),
+              // ),
+              // const SizedBox(
+              //   height: 20,
+              // ),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.end,
+              //   children: [
+              //     InkWell(
+              //       onTap: () async {
+              //         SmartDialog.showLoading(
+              //           animationBuilder: (controller, child, animationParam) {
+              //             return Loading(
+              //               text: 'Please wait...',
+              //             );
+              //           },
+              //         );
+              //         await FirebaseFirestore.instance
+              //             .collection('price')
+              //             .doc('ehEWIZZymdNkj7UZz2CM9L7zBUd2')
+              //             .update({'allYear': yallPriceTextController.text});
+              //         SmartDialog.dismiss();
+              //         Get.back();
+              //       },
+              //       child: Container(
+              //         height: 30.h,
+              //         width: 100.w,
+              //         decoration: BoxDecoration(
+              //           borderRadius: BorderRadius.circular(10.r),
+              //           gradient: const LinearGradient(colors: [
+              //             appColor1,
+              //             appColor2,
+              //           ]),
+              //         ),
+              //         child: const Center(child: Text('Update')),
+              //       ),
+              //     ),
+              //   ],
+              // ),
               const SizedBox(
                 height: 20,
               ),
@@ -269,85 +269,85 @@ class _ChangePriceState extends State<ChangePrice> {
                   ),
                 ],
               ),
-              const SizedBox(
-                height: 20,
-              ),
-              const Text(
-                'Single Category Price year',
-                style: TextStyle(
-                    color: textColor,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              SizedBox(
-                height: 45.h,
-                child: TextFormField(
-                  keyboardType: TextInputType.number,
-                  controller: ysingPriceTextController,
-                  decoration: InputDecoration(
-                    hintText: 'Enter Single Category Price',
-                    hintStyle: TextStyle(
-                        color: textColor,
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w300),
-                    fillColor: widgtColor,
-                    filled: true,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.r),
-                      borderSide: const BorderSide(color: border),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.r),
-                      borderSide: const BorderSide(color: border),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.r),
-                      borderSide: const BorderSide(color: border),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  InkWell(
-                    onTap: () async {
-                      SmartDialog.showLoading(
-                        animationBuilder: (controller, child, animationParam) {
-                          return Loading(
-                            text: 'Please wait...',
-                          );
-                        },
-                      );
-                      await FirebaseFirestore.instance
-                          .collection('price')
-                          .doc('ehEWIZZymdNkj7UZz2CM9L7zBUd2')
-                          .update(
-                              {'singleYear': ysingPriceTextController.text});
-                      SmartDialog.dismiss();
-                      Get.back();
-                    },
-                    child: Container(
-                      height: 30.h,
-                      width: 100.w,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10.r),
-                        gradient: const LinearGradient(colors: [
-                          appColor1,
-                          appColor2,
-                        ]),
-                      ),
-                      child: const Center(child: Text('Update')),
-                    ),
-                  ),
-                ],
-              ),
+              // const SizedBox(
+              //   height: 20,
+              // ),
+              // const Text(
+              //   'Single Category Price year',
+              //   style: TextStyle(
+              //       color: textColor,
+              //       fontSize: 18,
+              //       fontWeight: FontWeight.w500),
+              // ),
+              // const SizedBox(
+              //   height: 20,
+              // ),
+              // SizedBox(
+              //   height: 45.h,
+              //   child: TextFormField(
+              //     keyboardType: TextInputType.number,
+              //     controller: ysingPriceTextController,
+              //     decoration: InputDecoration(
+              //       hintText: 'Enter Single Category Price',
+              //       hintStyle: TextStyle(
+              //           color: textColor,
+              //           fontSize: 14.sp,
+              //           fontWeight: FontWeight.w300),
+              //       fillColor: widgtColor,
+              //       filled: true,
+              //       border: OutlineInputBorder(
+              //         borderRadius: BorderRadius.circular(10.r),
+              //         borderSide: const BorderSide(color: border),
+              //       ),
+              //       enabledBorder: OutlineInputBorder(
+              //         borderRadius: BorderRadius.circular(10.r),
+              //         borderSide: const BorderSide(color: border),
+              //       ),
+              //       focusedBorder: OutlineInputBorder(
+              //         borderRadius: BorderRadius.circular(10.r),
+              //         borderSide: const BorderSide(color: border),
+              //       ),
+              //     ),
+              //   ),
+              // ),
+              // const SizedBox(
+              //   height: 20,
+              // ),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.end,
+              //   children: [
+              //     InkWell(
+              //       onTap: () async {
+              //         SmartDialog.showLoading(
+              //           animationBuilder: (controller, child, animationParam) {
+              //             return Loading(
+              //               text: 'Please wait...',
+              //             );
+              //           },
+              //         );
+              //         await FirebaseFirestore.instance
+              //             .collection('price')
+              //             .doc('ehEWIZZymdNkj7UZz2CM9L7zBUd2')
+              //             .update(
+              //                 {'singleYear': ysingPriceTextController.text});
+              //         SmartDialog.dismiss();
+              //         Get.back();
+              //       },
+              //       child: Container(
+              //         height: 30.h,
+              //         width: 100.w,
+              //         decoration: BoxDecoration(
+              //           borderRadius: BorderRadius.circular(10.r),
+              //           gradient: const LinearGradient(colors: [
+              //             appColor1,
+              //             appColor2,
+              //           ]),
+              //         ),
+              //         child: const Center(child: Text('Update')),
+              //       ),
+              //     ),
+              //   ],
+              // ),
             ],
           ),
         ),

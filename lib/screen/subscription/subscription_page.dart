@@ -82,31 +82,31 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                   const SizedBox(
                     height: 20,
                   ),
-                  Row(
-                    children: [
-                      SingleCatMonth(
-                          index: 2,
-                          selectIndex: index,
-                          price: '\$${snapshot.data!['singleYear']}.00 / year',
-                          onTap: () {
-                            setState(() {
-                              index = 2;
-                            });
-                          }),
-                      const SizedBox(
-                        width: 15,
-                      ),
-                      AllCatMonth(
-                          index: 3,
-                          selectIndex: index,
-                          price: '\$${snapshot.data!['allYear']}.00 / year',
-                          onTap: () {
-                            setState(() {
-                              index = 3;
-                            });
-                          }),
-                    ],
-                  ),
+                  // Row(
+                  //   children: [
+                  //     SingleCatMonth(
+                  //         index: 2,
+                  //         selectIndex: index,
+                  //         price: '\$${snapshot.data!['singleYear']}.00 / year',
+                  //         onTap: () {
+                  //           setState(() {
+                  //             index = 2;
+                  //           });
+                  //         }),
+                  //     const SizedBox(
+                  //       width: 15,
+                  //     ),
+                  //     AllCatMonth(
+                  //         index: 3,
+                  //         selectIndex: index,
+                  //         price: '\$${snapshot.data!['allYear']}.00 / year',
+                  //         onTap: () {
+                  //           setState(() {
+                  //             index = 3;
+                  //           });
+                  //         }),
+                  //   ],
+                  // ),
                   const Spacer(),
                   AppButton(
                       label: 'Continue'.tr,
