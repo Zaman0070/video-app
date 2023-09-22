@@ -166,22 +166,22 @@ class _HomeBoxState extends State<HomeBox> {
                       widget.creatTime,
                       style: TextStyle(fontSize: 10.sp),
                     ),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.remove_red_eye,
-                          size: 12.h,
-                          color: textColor,
-                        ),
-                        const SizedBox(
-                          width: 5,
-                        ),
-                        Text(
-                          widget.viewCount.toString(),
-                          style: TextStyle(fontSize: 10.sp),
-                        ),
-                      ],
-                    ),
+                    // Row(
+                    //   children: [
+                    //     Icon(
+                    //       Icons.remove_red_eye,
+                    //       size: 12.h,
+                    //       color: textColor,
+                    //     ),
+                    //     const SizedBox(
+                    //       width: 5,
+                    //     ),
+                    //     Text(
+                    //       widget.viewCount.toString(),
+                    //       style: TextStyle(fontSize: 10.sp),
+                    //     ),
+                    //   ],
+                    // ),
                   ],
                 ),
               ),

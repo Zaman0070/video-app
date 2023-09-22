@@ -56,54 +56,64 @@ class PopularList extends StatelessWidget {
             ),
           );
         }
-        var videos = snapshot.data!.docs;
-        videos.sort((a, b) {
-          final popularityA = a['watchList'].length;
-          final popularityB = b['watchList'].length;
-          return popularityB
-              .compareTo(popularityA); // Sort in descending order.
-        });
+        // var videos = snapshot.data!.docs;
+        // videos.sort((a, b) {
+        //   final popularityA = a['watchList'].length;
+        //   final popularityB = b['watchList'].length;
+        //   return popularityB
+        //       .compareTo(popularityA); // Sort in descending order.
+        // });
+
         return ListView.builder(
             padding: EdgeInsets.only(bottom: 70.h, top: 10.h, right: 15.w),
             physics: const ScrollPhysics(),
             shrinkWrap: true,
-            itemCount: videos.length,
+            itemCount:
+                snapshot.data!.docs.length + (snapshot.data!.docs.length ~/ 5),
             itemBuilder: (context, index) {
               if (index % 6 == 5 && index != 0) {
                 return _adController.ad != null && _adController.adLoaded.isTrue
                     ? SizedBox(
                         height: 70.h, child: AdWidget(ad: _adController.ad!))
                     : Container();
+              } else {
+                final videoIndex = index - (index ~/ 6);
+                if (videoIndex < snapshot.data!.docs.length) {
+                  VideoModel videoModel = VideoModel.fromMap(
+                      snapshot.data!.docs[videoIndex].data());
+                  DateTime dateTime =
+                      DateTime.fromMillisecondsSinceEpoch(videoModel.time!);
+                  return HomeBox(
+                    creatTime: DateFormat('dd, MMM yyyy').format(dateTime),
+                    viewCount: videoModel.watchList!.length,
+                    id: snapshot.data!.docs[videoIndex].id,
+                    onTap: () async {
+                      if (videoModel.paid == 'unpaid') {
+                        Get.to(() => ShowVideo(
+                              videoUrl: videoModel.videoUrl!,
+                            ));
+                        FirebaseAuth.instance.currentUser != null
+                            ? await _firebaseServices.addWatchList(
+                                postId: snapshot.data!.docs[videoIndex].id,
+                                uid: FirebaseAuth.instance.currentUser!.uid,
+                                context: context)
+                            : null;
+                        AdHelper.showRewardedAd(onComplete: () {});
+                      } else if (videoModel.paid == 'paid') {
+                        if (FirebaseAuth.instance.currentUser == null) {
+                          Get.to(() => const Login());
+                        } else {
+                          Get.to(() => const SubscriptionPage());
+                        }
+                      }
+                    },
+                    videoModel: videoModel,
+                  );
+                } else {
+                  return Container();
+                }
+                // VideoModel videoModel = VideoModel.fromMap(videos[index].data());
               }
-              VideoModel videoModel = VideoModel.fromMap(videos[index].data());
-              DateTime dateTime =
-                  DateTime.fromMillisecondsSinceEpoch(videoModel.time!);
-              return HomeBox(
-                creatTime: DateFormat('dd, MMM yyyy').format(dateTime),
-                viewCount: videoModel.watchList!.length,
-                id: videos.elementAt(index).id,
-                onTap: () async {
-                  if (videoModel.paid == 'unpaid') {
-                    Get.to(() => ShowVideo(
-                          videoUrl: videoModel.videoUrl!,
-                        ));
-                    FirebaseAuth.instance.currentUser != null
-                        ? await _firebaseServices.addWatchList(
-                            postId: videos.elementAt(index).id,
-                            uid: FirebaseAuth.instance.currentUser!.uid,
-                            context: context)
-                        : null;
-                    AdHelper.showRewardedAd(onComplete: () {});
-                  } else if (videoModel.paid == 'paid') {
-                    if (FirebaseAuth.instance.currentUser == null) {
-                      Get.to(() => const Login());
-                    } else {
-                      Get.to(() => const SubscriptionPage());
-                    }
-                  }
-                },
-                videoModel: videoModel,
-              );
             });
       },
     );
