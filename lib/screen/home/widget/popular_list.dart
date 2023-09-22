@@ -26,11 +26,10 @@ class PopularList extends StatelessWidget {
   });
 
   final _adController = NativeAdController();
-  FirebaseServices _firebaseServices = FirebaseServices();
+  final FirebaseServices _firebaseServices = FirebaseServices();
 
   @override
   Widget build(BuildContext context) {
-    print(DateTime.now().millisecondsSinceEpoch);
     _adController.ad = AdHelper.loadNativeAd(adController: _adController);
 
     return StreamBuilder(
