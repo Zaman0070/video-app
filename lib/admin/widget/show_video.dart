@@ -24,7 +24,7 @@ class _ShowVideoState extends State<ShowVideo> {
   @override
   void initState() {
     super.initState();
-    timer = Timer.periodic(const Duration(seconds: 150), (Timer t) {
+    timer = Timer.periodic(const Duration(seconds: 65), (Timer t) {
       if (adCount < 3) {
         setState(() {
           videoPlayerController.pause();

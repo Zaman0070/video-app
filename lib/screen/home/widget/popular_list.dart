@@ -67,16 +67,22 @@ class PopularList extends StatelessWidget {
             padding: EdgeInsets.only(bottom: 70.h, top: 10.h, right: 15.w),
             physics: const ScrollPhysics(),
             shrinkWrap: true,
-            itemCount:
-                snapshot.data!.docs.length + (snapshot.data!.docs.length ~/ 5),
+            itemCount: snapshot.data!.docs.length +
+                ((snapshot.data!.docs.length - 1) ~/ 5) +
+                1,
             itemBuilder: (context, index) {
-              if (index % 6 == 5 && index != 0) {
+              if (index == 0) {
+                return _adController.ad != null && _adController.adLoaded.isTrue
+                    ? SizedBox(
+                        height: 70.h, child: AdWidget(ad: _adController.ad!))
+                    : Container();
+              } else if (index % 6 == 5) {
                 return _adController.ad != null && _adController.adLoaded.isTrue
                     ? SizedBox(
                         height: 70.h, child: AdWidget(ad: _adController.ad!))
                     : Container();
               } else {
-                final videoIndex = index - (index ~/ 6);
+                final videoIndex = index - (index ~/ 6) - 1;
                 if (videoIndex < snapshot.data!.docs.length) {
                   VideoModel videoModel = VideoModel.fromMap(
                       snapshot.data!.docs[videoIndex].data());
@@ -111,7 +117,6 @@ class PopularList extends StatelessWidget {
                 } else {
                   return Container();
                 }
-                // VideoModel videoModel = VideoModel.fromMap(videos[index].data());
               }
             });
       },

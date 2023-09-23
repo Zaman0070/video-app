@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -309,10 +308,8 @@ class _EditVideoState extends State<EditVideo> {
                                       paid: paidValue,
                                       privacy: selectedValue,
                                       videoUrl: widget.videoModel.videoUrl!,
-                                      time:
-                                          DateTime.now().millisecondsSinceEpoch,
-                                      uid: FirebaseAuth
-                                          .instance.currentUser!.uid,
+                                      time: widget.videoModel.time,
+                                      uid: widget.videoModel.uid,
                                       thumbnailUrl: thumbnail.isEmpty
                                           ? widget.videoModel.thumbnailUrl!
                                           : thumbnail[0],
