@@ -21,6 +21,7 @@ class _ShowVideoState extends State<ShowVideo> {
   bool isPlaying = false;
   Timer? timer;
   int adCount = 0;
+  List<int> adIntervals = [1, 2, 3];
   @override
   void initState() {
     super.initState();
@@ -43,21 +44,22 @@ class _ShowVideoState extends State<ShowVideo> {
   }
 
   void startAdTimer() {
-    const adIntervals = [75, 200, 320];
     if (adCount < adIntervals.length) {
-      final duration = Duration(seconds: adIntervals[adCount]);
-      timer = Timer.periodic(duration, (Timer t) {
-        setState(() {
-          videoPlayerController.pause();
-        });
-        AdHelper.showRewardedAd(onComplete: () {
+      int remainingTime = adIntervals[adCount] * 60; // Convert to seconds
+      timer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
+        remainingTime--;
+        if (remainingTime <= 0) {
+          t.cancel(); // Stop the timer
           setState(() {
-            videoPlayerController.play();
+            videoPlayerController.pause();
           });
-        });
-        adCount++;
-        if (adCount >= adIntervals.length) {
-          t.cancel();
+          AdHelper.showRewardedAd(onComplete: () {
+            setState(() {
+              videoPlayerController.play();
+            });
+            adCount++;
+            startAdTimer(); // Schedule the next ad
+          });
         }
       });
     }
