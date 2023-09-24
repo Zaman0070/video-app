@@ -33,11 +33,15 @@ class _ShowVideoState extends State<ShowVideo> {
           }));
     _customVideoPlayerController = CustomVideoPlayerController(
       customVideoPlayerSettings: const CustomVideoPlayerSettings(
+          showPlayButton: true,
           showDurationPlayed: true,
+          playOnlyOnce: true,
+          autoFadeOutControls: true,
+          controlBarAvailable: true,
+          durationAfterControlsFadeOut: Duration(minutes: 5),
           customVideoPlayerProgressBarSettings:
               CustomVideoPlayerProgressBarSettings(
-            showProgressBar: true,
-          )),
+                  showProgressBar: true, allowScrubbing: true)),
       context: context,
       videoPlayerController: videoPlayerController,
     );
