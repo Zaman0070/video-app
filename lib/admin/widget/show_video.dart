@@ -24,21 +24,8 @@ class _ShowVideoState extends State<ShowVideo> {
   @override
   void initState() {
     super.initState();
-    timer = Timer.periodic(const Duration(seconds: 65), (Timer t) {
-      if (adCount < 3) {
-        setState(() {
-          videoPlayerController.pause();
-        });
-        AdHelper.showRewardedAd(onComplete: () {
-          setState(() {
-            videoPlayerController.play();
-          });
-        });
-        adCount++;
-      } else {
-        t.cancel();
-      }
-    });
+    startAdTimer();
+
     videoPlayerController = VideoPlayerController.network(videoUrl)
       ..initialize().then((value) => setState(() {
             isPlaying = true;
@@ -53,6 +40,27 @@ class _ShowVideoState extends State<ShowVideo> {
       context: context,
       videoPlayerController: videoPlayerController,
     );
+  }
+
+  void startAdTimer() {
+    const adIntervals = [75, 200, 320];
+    if (adCount < adIntervals.length) {
+      final duration = Duration(seconds: adIntervals[adCount]);
+      timer = Timer.periodic(duration, (Timer t) {
+        setState(() {
+          videoPlayerController.pause();
+        });
+        AdHelper.showRewardedAd(onComplete: () {
+          setState(() {
+            videoPlayerController.play();
+          });
+        });
+        adCount++;
+        if (adCount >= adIntervals.length) {
+          t.cancel();
+        }
+      });
+    }
   }
 
   @override
