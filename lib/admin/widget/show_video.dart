@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:appinio_video_player/appinio_video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:video_app/helper/ads.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 class ShowVideo extends StatefulWidget {
   final String videoUrl;
@@ -30,6 +31,7 @@ class _ShowVideoState extends State<ShowVideo> {
     videoPlayerController = VideoPlayerController.network(videoUrl)
       ..initialize().then((value) => setState(() {
             isPlaying = true;
+            WakelockPlus.enable();
           }));
     _customVideoPlayerController = CustomVideoPlayerController(
       customVideoPlayerSettings: const CustomVideoPlayerSettings(
@@ -72,6 +74,7 @@ class _ShowVideoState extends State<ShowVideo> {
   @override
   void dispose() {
     _customVideoPlayerController.dispose();
+    WakelockPlus.disable();
     timer?.cancel();
     super.dispose();
   }

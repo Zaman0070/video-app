@@ -8,9 +8,11 @@ import 'package:video_app/constant/color.dart';
 import 'package:video_app/language/local_string.dart';
 import 'package:video_app/screen/navigation/navigation.dart';
 import 'package:video_app/services/share_pref.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  WakelockPlus.enable();
   await Firebase.initializeApp();
   OneSignal.shared.setLogLevel(OSLogLevel.verbose, OSLogLevel.none);
   OneSignal.shared.setAppId('66400e53-7ca4-44b9-84bf-7146415c8076');
