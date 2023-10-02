@@ -66,8 +66,8 @@ class Profile extends StatelessWidget {
                             backgroundColor: Colors.transparent,
                             radius: 50.h,
                             backgroundImage: NetworkImage(
-                              userModel.profilePic == ''
-                                  ? 'https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png'
+                              userModel.profilePic == null
+                                  ? 'https://firebasestorage.googleapis.com/v0/b/video-app-eea5a.appspot.com/o/images%2Fwp11853292-profile-icon-pink-wallpapers.jpg?alt=media&token=d84a8f4b-bcd8-42cc-bcb5-cd0d1aa3bd59'
                                   : userModel.profilePic.toString(),
                             ),
                           ),
@@ -76,7 +76,10 @@ class Profile extends StatelessWidget {
                       SizedBox(
                         height: 18.h,
                       ),
-                      Text(userModel.email.toString(),
+                      Text(
+                          userModel.email == ''
+                              ? userModel.phoneNumber.toString()
+                              : userModel.email.toString(),
                           style: TextStyle(
                               color: textColor,
                               fontSize: 16.sp,

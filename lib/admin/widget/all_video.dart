@@ -46,7 +46,7 @@ class AllVideo extends StatelessWidget {
               return VideoBox(
                 edit: () {
                   Get.to(() => EditVideo(
-                    id: snapshot.data!.docs[index].id,
+                        id: snapshot.data!.docs[index].id,
                         videoModel: videoModel,
                       ));
                 },
@@ -71,6 +71,7 @@ class AllVideo extends StatelessWidget {
                 },
                 onTap: () {
                   Get.to(() => ShowVideo(
+                        showAd: true,
                         videoUrl: videoModel.videoUrl!,
                       ));
                 },

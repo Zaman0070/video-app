@@ -9,6 +9,7 @@ import 'package:video_app/admin/widget/show_video.dart';
 import 'package:video_app/constant/color.dart';
 import 'package:video_app/controller/ads_controller.dart';
 import 'package:video_app/helper/ads.dart';
+import 'package:video_app/model/user_model.dart';
 import 'package:video_app/model/video.dart';
 import 'package:video_app/screen/auth/login.dart';
 import 'package:video_app/screen/home/widget/home_box.dart';
@@ -16,7 +17,7 @@ import 'package:video_app/screen/subscription/subscription_page.dart';
 import 'package:video_app/services/firebase_services.dart';
 
 // ignore: must_be_immutable
-class PopularList extends StatelessWidget {
+class PopularList extends StatefulWidget {
   final String category;
   final String query;
   PopularList({
@@ -25,7 +26,39 @@ class PopularList extends StatelessWidget {
     required this.query,
   });
 
+  @override
+  State<PopularList> createState() => _PopularListState();
+}
+
+class _PopularListState extends State<PopularList> {
+  UserModel? currentUserData;
+  DateTime payDate = DateTime.now();
+  DateTime expireDate = DateTime.now();
+  getCurrentUser() async {
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get()
+        .then((value) {
+      setState(() {
+        currentUserData = UserModel.fromMap(value.data()!);
+        payDate = DateTime.parse(currentUserData!.payDate!);
+        expireDate = DateTime.parse(currentUserData!.expireDate!);
+        print(
+            currentUserData!.phoneNumber.toString() + "=====================");
+        print(payDate.toString() + "=====================");
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    getCurrentUser();
+    super.initState();
+  }
+
   final _adController = NativeAdController();
+
   final FirebaseServices _firebaseServices = FirebaseServices();
 
   @override
@@ -33,11 +66,11 @@ class PopularList extends StatelessWidget {
     _adController.ad = AdHelper.loadNativeAd(adController: _adController);
 
     return StreamBuilder(
-      stream: query == 'Papular'
+      stream: widget.query == 'Papular'
           ? FirebaseFirestore.instance.collection('videos').snapshots()
           : FirebaseFirestore.instance
               .collection('videos')
-              .where(category, isEqualTo: query)
+              .where(widget.category, isEqualTo: widget.query)
               .orderBy('time', descending: true)
               .snapshots(),
       builder: (context, snapshot) {
@@ -71,13 +104,19 @@ class PopularList extends StatelessWidget {
                 ((snapshot.data!.docs.length - 1) ~/ 5) +
                 1,
             itemBuilder: (context, index) {
+              bool shouldShowAds = DateTime.now().isAfter(payDate) &&
+                  DateTime.now().isBefore(expireDate);
               if (index == 0) {
-                return _adController.ad != null && _adController.adLoaded.isTrue
+                return _adController.ad != null &&
+                        _adController.adLoaded.isTrue &&
+                        !shouldShowAds
                     ? SizedBox(
                         height: 70.h, child: AdWidget(ad: _adController.ad!))
                     : Container();
               } else if (index % 6 == 5) {
-                return _adController.ad != null && _adController.adLoaded.isTrue
+                return _adController.ad != null &&
+                        _adController.adLoaded.isTrue &&
+                        !shouldShowAds
                     ? SizedBox(
                         height: 70.h, child: AdWidget(ad: _adController.ad!))
                     : Container();
@@ -95,6 +134,7 @@ class PopularList extends StatelessWidget {
                     onTap: () async {
                       if (videoModel.paid == 'unpaid') {
                         Get.to(() => ShowVideo(
+                              showAd: shouldShowAds,
                               videoUrl: videoModel.videoUrl!,
                             ));
                         FirebaseAuth.instance.currentUser != null
@@ -103,7 +143,9 @@ class PopularList extends StatelessWidget {
                                 uid: FirebaseAuth.instance.currentUser!.uid,
                                 context: context)
                             : null;
-                        AdHelper.showRewardedAd(onComplete: () {});
+                        !shouldShowAds
+                            ? AdHelper.showRewardedAd(onComplete: () {})
+                            : null;
                       } else if (videoModel.paid == 'paid') {
                         if (FirebaseAuth.instance.currentUser == null) {
                           Get.to(() => const Login());

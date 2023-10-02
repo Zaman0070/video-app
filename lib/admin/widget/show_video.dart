@@ -7,8 +7,10 @@ import 'package:wakelock_plus/wakelock_plus.dart';
 
 class ShowVideo extends StatefulWidget {
   final String videoUrl;
+  final bool showAd;
 
-  const ShowVideo({required this.videoUrl, Key? key}) : super(key: key);
+  const ShowVideo({required this.videoUrl, Key? key, required this.showAd})
+      : super(key: key);
 
   @override
   State<ShowVideo> createState() => _ShowVideoState();
@@ -50,24 +52,28 @@ class _ShowVideoState extends State<ShowVideo> {
   }
 
   void startAdTimer() {
-    if (adCount < adIntervals.length) {
-      int remainingTime = adIntervals[adCount] * 60; // Convert to seconds
-      timer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
-        remainingTime--;
-        if (remainingTime <= 0) {
-          t.cancel(); // Stop the timer
-          setState(() {
-            videoPlayerController.pause();
-          });
-          AdHelper.showRewardedAd(onComplete: () {
+    if (widget.showAd) {
+      return;
+    } else {
+      if (adCount < adIntervals.length) {
+        int remainingTime = adIntervals[adCount] * 60; // Convert to seconds
+        timer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
+          remainingTime--;
+          if (remainingTime <= 0) {
+            t.cancel(); // Stop the timer
             setState(() {
-              videoPlayerController.play();
+              videoPlayerController.pause();
             });
-            adCount++;
-            startAdTimer(); // Schedule the next ad
-          });
-        }
-      });
+            AdHelper.showRewardedAd(onComplete: () {
+              setState(() {
+                videoPlayerController.play();
+              });
+              adCount++;
+              startAdTimer(); // Schedule the next ad
+            });
+          }
+        });
+      }
     }
   }
 

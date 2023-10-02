@@ -10,6 +10,7 @@ import 'package:video_app/admin/widget/show_video.dart';
 import 'package:video_app/constant/color.dart';
 import 'package:video_app/controller/ads_controller.dart';
 import 'package:video_app/helper/ads.dart';
+import 'package:video_app/model/user_model.dart';
 import 'package:video_app/model/video.dart';
 import 'package:video_app/screen/auth/login.dart';
 import 'package:video_app/screen/home/widget/home_box.dart';
@@ -31,9 +32,31 @@ class _BookMarkState extends State<BookMark> {
     });
   }
 
+  UserModel? currentUserData;
+  DateTime payDate = DateTime.now();
+  DateTime expireDate = DateTime.now();
+
+  getCurrentUser() async {
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get()
+        .then((value) {
+      setState(() {
+        currentUserData = UserModel.fromMap(value.data()!);
+        payDate = DateTime.parse(currentUserData!.payDate!);
+        expireDate = DateTime.parse(currentUserData!.expireDate!);
+        print(
+            currentUserData!.phoneNumber.toString() + "=====================");
+        print(payDate.toString() + "=====================");
+      });
+    });
+  }
+
   @override
   void initState() {
     getDevicId();
+    getCurrentUser();
     // TODO: implement initState
     super.initState();
   }
@@ -78,6 +101,8 @@ class _BookMarkState extends State<BookMark> {
             .orderBy('time')
             .snapshots(),
         builder: (context, snapshot) {
+          bool shouldShowAds = DateTime.now().isAfter(payDate) &&
+              DateTime.now().isBefore(expireDate);
           if (snapshot.data == null) {
             return const Center(
               child: CircularProgressIndicator(
@@ -105,7 +130,8 @@ class _BookMarkState extends State<BookMark> {
                 itemBuilder: (context, index) {
                   if (index % 6 == 5 && index != 0) {
                     return _adController.ad != null &&
-                            _adController.adLoaded.isTrue
+                            _adController.adLoaded.isTrue &&
+                            !shouldShowAds
                         ? SizedBox(
                             height: 130.h,
                             child: AdWidget(ad: _adController.ad!))
@@ -126,6 +152,7 @@ class _BookMarkState extends State<BookMark> {
                         Get.to(() => const Login());
                       } else {
                         Get.to(() => ShowVideo(
+                              showAd: shouldShowAds,
                               videoUrl: videoModel.videoUrl!,
                             ));
                         FirebaseAuth.instance.currentUser == null
@@ -134,7 +161,9 @@ class _BookMarkState extends State<BookMark> {
                                 postId: snapshot.data!.docs[index].id,
                                 uid: FirebaseAuth.instance.currentUser!.uid,
                                 context: context);
-                        AdHelper.showRewardedAd(onComplete: () {});
+                        !shouldShowAds
+                            ? AdHelper.showRewardedAd(onComplete: () {})
+                            : null;
                       }
                     },
                     videoModel: videoModel,

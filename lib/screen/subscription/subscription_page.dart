@@ -2,8 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:video_app/constant/color.dart';
-import 'package:video_app/constant/widget/app_button.dart';
-import 'package:video_app/screen/subscription/payment_page.dart';
+import 'package:video_app/constant/widget/expanded_title.dart';
 import 'package:video_app/screen/subscription/widget/all_cat_month.dart';
 import 'package:video_app/screen/subscription/widget/single_cat_month.dart';
 
@@ -16,6 +15,7 @@ class SubscriptionPage extends StatefulWidget {
 
 class _SubscriptionPageState extends State<SubscriptionPage> {
   int index = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -107,14 +107,18 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                   //         }),
                   //   ],
                   // ),
+
                   const Spacer(),
-                  AppButton(
-                      label: 'Continue'.tr,
-                      onPressed: () {
-                        Get.to(() => const PaymentPage());
-                      }),
+
+                  ExpandTileWidget(
+                    amount: index == 0
+                        ? snapshot.data!['single']
+                        : snapshot.data!['all'],
+                    index: index,
+                  ),
+
                   const SizedBox(
-                    height: 20,
+                    height: 30,
                   ),
                 ],
               ),

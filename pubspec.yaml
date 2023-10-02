@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 2.0.0+1
+version: 1.0.0+11
 
 environment:
   sdk: '>=3.0.1 <4.0.0'
@@ -63,15 +63,27 @@ dependencies:
   country_code_picker: ^3.0.0
   # pay: ^1.1.2
   flutter_svg: ^2.0.7
-  url_launcher: ^6.1.12
+  url_launcher: ^6.1.14
   dropdown_textfield: ^1.0.8
   flutter_stripe: ^9.3.0
   intl: ^0.18.0
   wakelock_plus: ^1.1.1
+  # http: ^1.1.0 
+  crypto: ^3.0.3
+  pay: ^1.1.2
+  flutter_dotenv: ^5.1.0
+  flutter_easyloading: ^3.0.5
+  dio: ^5.3.3
+  flutter_inappwebview: ^6.0.0-beta.24+1
+  easy_logger: ^0.0.2
+  aba_payment:
+    path: ../aba_payment
+  expansion_tile_card: ^3.0.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -95,6 +107,7 @@ flutter:
   assets:
     - assets/icons/
     - assets/logo/
+    - .env_sample
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -10,10 +10,24 @@ import 'package:video_app/screen/navigation/navigation.dart';
 import 'package:video_app/services/share_pref.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
+import 'package:aba_payment/aba_payment.dart';
+import 'package:aba_payment/services/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   WakelockPlus.enable();
   await Firebase.initializeApp();
+  await dotenv.load(fileName: ".env_sample");
+  PaywayTransactionService.ensureInitialized(ABAMerchant(
+    merchantID: dotenv.get('ABA_PAYWAY_MERCHANT_ID'),
+    merchantApiName: dotenv.get('ABA_PAYWAY_MERCHANT_NAME'),
+    merchantApiKey: dotenv.get('ABA_PAYWAY_API_KEY'),
+    baseApiUrl: dotenv.get('ABA_PAYWAY_API_URL'),
+    refererDomain:
+        "https://play.google.com/store/apps/details?id=com.theAppForce.videoapp",
+  ));
+
   OneSignal.shared.setLogLevel(OSLogLevel.verbose, OSLogLevel.none);
   OneSignal.shared.setAppId('66400e53-7ca4-44b9-84bf-7146415c8076');
   OneSignal.shared.setNotificationWillShowInForegroundHandler(
@@ -22,6 +36,7 @@ void main() async {
   });
   SharePref sharePref = SharePref();
   String? type = await sharePref.getType('login');
+
   runApp(MyApp(
     type: type!,
   ));
