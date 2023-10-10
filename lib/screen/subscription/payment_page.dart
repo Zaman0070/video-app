@@ -31,33 +31,7 @@
 // }
 
 // class _PaymentPageState extends State<PaymentPage> {
-//   bool _isLoading = false;
-//   final ABAMerchant _merchant = merchant;
-//   double _total = 6.00;
-//   double _shipping = 0.0;
-//   String _firstname = "Thorn";
-//   String _lastname = "Sonita";
-//   String _phone = "+85515200361";
-//   String _email = "jhondoe@testemail.com";
-//   final String _checkoutApiUrl =
-//       "https://checkout.payway.com.kh/api/payment-gateway/v1/payments/purchase";
-//   List<ABATransactionItem> _items = [];
 
-//   initialize() {
-//     if (mounted) {
-//       setState(() {
-//         _total = 6.00;
-//         _shipping = 0.0;
-//         _firstname = "Thorn";
-//         _lastname = "Sonita";
-//         _phone = "+85515200361";
-//         _email = "jhondoe@testemail.com";
-//         _items = [
-//           ABATransactionItem(name: "ទំនិញ 1", price: 1, quantity: 1),
-//         ];
-//       });
-//     }
-//   }
 
 //   @override
 //   void initState() {

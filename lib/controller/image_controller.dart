@@ -33,7 +33,6 @@ class ImagePickerController extends GetxController {
     }
     return uploadImagesToFirebase(selectedImages);
   }
-
   Future<List<String>> pickMulti() async {
     final picker = ImagePicker();
     final pickedFiles = await picker.pickMultiImage();

@@ -146,12 +146,23 @@ class _PopularListState extends State<PopularList> {
                         !shouldShowAds
                             ? AdHelper.showRewardedAd(onComplete: () {})
                             : null;
-                      } else if (videoModel.paid == 'paid') {
+                      } else if (videoModel.paid == 'paid' && !shouldShowAds) {
                         if (FirebaseAuth.instance.currentUser == null) {
                           Get.to(() => const Login());
                         } else {
                           Get.to(() => const SubscriptionPage());
                         }
+                      } else if (videoModel.paid == 'paid' && shouldShowAds) {
+                        Get.to(() => ShowVideo(
+                              showAd: shouldShowAds,
+                              videoUrl: videoModel.videoUrl!,
+                            ));
+                        FirebaseAuth.instance.currentUser != null
+                            ? await _firebaseServices.addWatchList(
+                                postId: snapshot.data!.docs[videoIndex].id,
+                                uid: FirebaseAuth.instance.currentUser!.uid,
+                                context: context)
+                            : null;
                       }
                     },
                     videoModel: videoModel,

@@ -1,5 +1,10 @@
 import 'dart:developer';
 import 'dart:io';
+import 'package:aba_payment/enumeration.dart';
+import 'package:aba_payment/models/aba_merchant.dart';
+import 'package:aba_payment/models/aba_transaction.dart';
+import 'package:aba_payment/models/aba_transaction_item.dart';
+import 'package:aba_payment/services/payway_transaction_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +12,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pay/pay.dart';
 import 'package:video_app/constant/color.dart';
+import 'package:video_app/helper/config.dart';
 import 'package:video_app/screen/subscription/payment_config.dart';
 
 class ExpandTileWidget extends StatefulWidget {
@@ -26,6 +32,40 @@ class ExpandTileWidget extends StatefulWidget {
 }
 
 class _ExpandTileWidgetState extends State<ExpandTileWidget> {
+  bool _isLoading = false;
+  final ABAMerchant _merchant = merchant;
+  double _total = 6.00;
+  double _shipping = 0.0;
+  String _firstname = "Thorn";
+  String _lastname = "Sonita";
+  String _phone = "+85515200361";
+  String _email = "jhondoe@testemail.com";
+  final String _checkoutApiUrl =
+      "https://checkout.payway.com.kh/api/payment-gateway/v1/payments/purchase";
+  List<ABATransactionItem> _items = [];
+
+  initialize() {
+    if (mounted) {
+      setState(() {
+        _total = 6.00;
+        _shipping = 0.0;
+        _firstname = "Thorn";
+        _lastname = "Sonita";
+        _phone = "+85515200361";
+        _email = "jhondoe@testemail.com";
+        _items = [
+          ABATransactionItem(name: "ទំនិញ 1", price: 1, quantity: 1),
+        ];
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    initialize();
+    super.initState();
+  }
+
   bool isExpanded = false;
   late ApplePayButton applePayButton = ApplePayButton(
     paymentConfiguration: PaymentConfiguration.fromJsonString(defaultApplePay),
@@ -68,7 +108,6 @@ class _ExpandTileWidgetState extends State<ExpandTileWidget> {
             ? DateTime.now().add(const Duration(days: 30)).toString()
             : DateTime.now().add(const Duration(days: 365)).toString(),
       });
-      log('Payment Result $result');
     },
     loadingIndicator: const Center(
       child: CircularProgressIndicator(),
@@ -155,38 +194,69 @@ class _ExpandTileWidgetState extends State<ExpandTileWidget> {
             color: Colors.black,
           ),
           children: <Widget>[
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8.0.w),
-              child: ListTile(
-                trailing: Icon(
-                  Icons.arrow_forward_ios,
-                  size: 14.h,
-                  color: Colors.black,
-                ),
-                title: Row(
-                  children: [
-                    Image.asset(
-                      'assets/icons/aba.png',
-                      height: 35.h,
-                      width: 55.w,
-                    ),
-                    SizedBox(
-                      width: 5.w,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'ABA Payway',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w400,
-                            fontSize: 14.sp,
-                          ),
-                        ),
-                      ],
-                    ),
+            InkWell(
+              onTap: () async {
+                final service = PaywayTransactionService.instance!;
+                final reqTime = service.uniqueReqTime();
+                final tranID = service.uniqueTranID();
+
+                var transaction = ABATransaction(
+                  merchant: _merchant,
+                  tranID: tranID,
+                  reqTime: reqTime,
+                  amount: double.tryParse(widget.amount),
+                  items: [
+                    ABATransactionItem(
+                        name: "ទំនិញ 1",
+                        price: double.tryParse(widget.amount),
+                        quantity: 1),
                   ],
+                  email: _email,
+                  firstname: _firstname,
+                  lastname: _lastname,
+                  phone: _phone,
+                  option: ABAPaymentOption.abapay_deeplink,
+                  shipping: _shipping,
+                  returnUrl: _checkoutApiUrl,
+                );
+
+                var result = await transaction.create();
+
+                log(result.toString());
+              },
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 8.0.w),
+                child: ListTile(
+                  trailing: Icon(
+                    Icons.arrow_forward_ios,
+                    size: 14.h,
+                    color: Colors.black,
+                  ),
+                  title: Row(
+                    children: [
+                      Image.asset(
+                        'assets/icons/aba.png',
+                        height: 35.h,
+                        width: 55.w,
+                      ),
+                      SizedBox(
+                        width: 5.w,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'ABA Payway',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w400,
+                              fontSize: 14.sp,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
