@@ -1,11 +1,14 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'dart:math';
 import 'package:aba_payment/enumeration.dart';
 import 'package:aba_payment/models/aba_merchant.dart';
 import 'package:aba_payment/models/aba_transaction.dart';
 import 'package:aba_payment/models/aba_transaction_item.dart';
 import 'package:aba_payment/services/payway_transaction_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:crypto/crypto.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -13,6 +16,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pay/pay.dart';
 import 'package:video_app/constant/color.dart';
 import 'package:video_app/helper/config.dart';
+import 'package:video_app/helper/payment.dart';
 import 'package:video_app/screen/subscription/payment_config.dart';
 
 class ExpandTileWidget extends StatefulWidget {
@@ -32,28 +36,27 @@ class ExpandTileWidget extends StatefulWidget {
 }
 
 class _ExpandTileWidgetState extends State<ExpandTileWidget> {
-  bool _isLoading = false;
   final ABAMerchant _merchant = merchant;
-  double _total = 6.00;
+  double total = 6.00;
   double _shipping = 0.0;
   String _firstname = "Thorn";
   String _lastname = "Sonita";
   String _phone = "+85515200361";
   String _email = "jhondoe@testemail.com";
   final String _checkoutApiUrl =
-      "https://checkout.payway.com.kh/api/payment-gateway/v1/payments/purchase";
-  List<ABATransactionItem> _items = [];
+      "https://checkout.payway.com.kh/api/payment-gateway/v1/payments";
+  List<ABATransactionItem> items = [];
 
   initialize() {
     if (mounted) {
       setState(() {
-        _total = 6.00;
+        total = 6.00;
         _shipping = 0.0;
         _firstname = "Thorn";
         _lastname = "Sonita";
         _phone = "+85515200361";
         _email = "jhondoe@testemail.com";
-        _items = [
+        items = [
           ABATransactionItem(name: "ទំនិញ 1", price: 1, quantity: 1),
         ];
       });
@@ -196,33 +199,22 @@ class _ExpandTileWidgetState extends State<ExpandTileWidget> {
           children: <Widget>[
             InkWell(
               onTap: () async {
-                final service = PaywayTransactionService.instance!;
-                final reqTime = service.uniqueReqTime();
-                final tranID = service.uniqueTranID();
-
-                var transaction = ABATransaction(
-                  merchant: _merchant,
-                  tranID: tranID,
-                  reqTime: reqTime,
-                  amount: double.tryParse(widget.amount),
-                  items: [
-                    ABATransactionItem(
-                        name: "ទំនិញ 1",
-                        price: double.tryParse(widget.amount),
-                        quantity: 1),
-                  ],
-                  email: _email,
-                  firstname: _firstname,
-                  lastname: _lastname,
-                  phone: _phone,
-                  option: ABAPaymentOption.abapay_deeplink,
-                  shipping: _shipping,
-                  returnUrl: _checkoutApiUrl,
-                );
-
-                var result = await transaction.create();
-
-                log(result.toString());
+                await Payment().sendPaymentRequest(
+                    req_time: DateTime.now().millisecondsSinceEpoch.toString(),
+                    tran_id: Random().nextInt(100000000).toString(),
+                    firstname: 'Bour',
+                    lastname: 'Kriya',
+                    email: 'kriya.bour@ababank.com',
+                    phone: '978719172',
+                    amount: '10',
+                    return_url:
+                        'aHR0cHM6Ly9zdWJzY3JpcHRpb24ubG9jYWxpemVib29rLmNvbS9hcGkvcGF5d2F5L2hvb2s=',
+                    continue_success_url:
+                        'https://subscription.localizebook.com/assets/html-files/loading-set-payment.html',
+                    return_params:
+                        'H4sIAAAAAAAAA0WJyw3AMAxCd+EcIduxnTbb9DdF1d3rnooQD8GNDdMlG/biWJnySxsOTOjqVDeaCfsIds/qnRFJjYVZFvr31qBoODGt4ap8Xjv4qL9hAAAA',
+                    view_type: 'hosted_view',
+                    payment_option: 'abapay_khqr_deeplink');
               },
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 8.0.w),
@@ -273,5 +265,12 @@ class _ExpandTileWidgetState extends State<ExpandTileWidget> {
         ),
       ),
     );
+  }
+
+  String getHash({required String hashStr, required String apiKey}) {
+    List<int> hmac =
+        Hmac(sha512, utf8.encode(apiKey)).convert(utf8.encode(hashStr)).bytes;
+    String hash = base64Encode(hmac);
+    return hash;
   }
 }

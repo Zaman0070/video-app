@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:appinio_video_player/appinio_video_player.dart';
 import 'package:flutter/material.dart';
@@ -55,8 +56,9 @@ class _ShowVideoState extends State<ShowVideo> {
     if (widget.showAd) {
       return;
     } else {
-      if (adCount < adIntervals.length) {
-        int remainingTime = adIntervals[adCount] * 60; // Convert to seconds
+      if (adCount < 2) {
+        int adIndex = Random().nextInt(adIntervals.length);
+        int remainingTime = adIntervals[adIndex] * 60; // Convert to seconds
         timer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
           remainingTime--;
           if (remainingTime <= 0) {
@@ -69,7 +71,7 @@ class _ShowVideoState extends State<ShowVideo> {
                 videoPlayerController.play();
               });
               adCount++;
-              startAdTimer(); // Schedule the next ad
+              startAdTimer();
             });
           }
         });
