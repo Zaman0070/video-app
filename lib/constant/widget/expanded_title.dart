@@ -1,21 +1,14 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
-import 'dart:math';
-import 'package:aba_payment/enumeration.dart';
-import 'package:aba_payment/models/aba_merchant.dart';
-import 'package:aba_payment/models/aba_transaction.dart';
-import 'package:aba_payment/models/aba_transaction_item.dart';
-import 'package:aba_payment/services/payway_transaction_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crypto/crypto.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
 import 'package:pay/pay.dart';
 import 'package:video_app/constant/color.dart';
-import 'package:video_app/helper/config.dart';
 import 'package:video_app/helper/payment.dart';
 import 'package:video_app/screen/subscription/payment_config.dart';
 
@@ -36,39 +29,6 @@ class ExpandTileWidget extends StatefulWidget {
 }
 
 class _ExpandTileWidgetState extends State<ExpandTileWidget> {
-  final ABAMerchant _merchant = merchant;
-  double total = 6.00;
-  double _shipping = 0.0;
-  String _firstname = "Thorn";
-  String _lastname = "Sonita";
-  String _phone = "+85515200361";
-  String _email = "jhondoe@testemail.com";
-  final String _checkoutApiUrl =
-      "https://checkout.payway.com.kh/api/payment-gateway/v1/payments";
-  List<ABATransactionItem> items = [];
-
-  initialize() {
-    if (mounted) {
-      setState(() {
-        total = 6.00;
-        _shipping = 0.0;
-        _firstname = "Thorn";
-        _lastname = "Sonita";
-        _phone = "+85515200361";
-        _email = "jhondoe@testemail.com";
-        items = [
-          ABATransactionItem(name: "ទំនិញ 1", price: 1, quantity: 1),
-        ];
-      });
-    }
-  }
-
-  @override
-  void initState() {
-    initialize();
-    super.initState();
-  }
-
   bool isExpanded = false;
   late ApplePayButton applePayButton = ApplePayButton(
     paymentConfiguration: PaymentConfiguration.fromJsonString(defaultApplePay),
@@ -100,8 +60,8 @@ class _ExpandTileWidgetState extends State<ExpandTileWidget> {
     ],
     type: GooglePayButtonType.subscribe,
     margin: const EdgeInsets.only(top: 15.0),
-    onPaymentResult: (result) {
-      FirebaseFirestore.instance
+    onPaymentResult: (result) async {
+      await FirebaseFirestore.instance
           .collection('users')
           .doc(FirebaseAuth.instance.currentUser!.uid)
           .update({
@@ -200,20 +160,20 @@ class _ExpandTileWidgetState extends State<ExpandTileWidget> {
             InkWell(
               onTap: () async {
                 await Payment().sendPaymentRequest(
-                    req_time: DateTime.now().millisecondsSinceEpoch.toString(),
-                    tran_id: Random().nextInt(100000000).toString(),
+                    index: widget.index,
+                    req_time: DateFormat('yyyyMMddHHmm').format(DateTime.now()),
+                    tran_id: DateTime.now().millisecondsSinceEpoch.toString(),
                     firstname: 'Bour',
                     lastname: 'Kriya',
                     email: 'kriya.bour@ababank.com',
                     phone: '978719172',
-                    amount: '10',
+                    amount: widget.amount,
                     return_url:
                         'aHR0cHM6Ly9zdWJzY3JpcHRpb24ubG9jYWxpemVib29rLmNvbS9hcGkvcGF5d2F5L2hvb2s=',
                     continue_success_url:
                         'https://subscription.localizebook.com/assets/html-files/loading-set-payment.html',
                     return_params:
                         'H4sIAAAAAAAAA0WJyw3AMAxCd+EcIduxnTbb9DdF1d3rnooQD8GNDdMlG/biWJnySxsOTOjqVDeaCfsIds/qnRFJjYVZFvr31qBoODGt4ap8Xjv4qL9hAAAA',
-                    view_type: 'hosted_view',
                     payment_option: 'abapay_khqr_deeplink');
               },
               child: Padding(

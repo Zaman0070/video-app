@@ -1,8 +1,15 @@
-import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:crypto/crypto.dart';
+import 'package:video_app/constant/widget/loading.dart';
+import 'package:video_app/model/payment.dart';
+import 'package:video_app/screen/subscription/qr_code.dart';
 
 class Payment {
   final String apiUrl =
@@ -10,8 +17,9 @@ class Payment {
   final String apiKey = 'e2f18ec6-462a-4fab-816b-9a3630a82e18';
   final String merchantId = 'measmeta';
 
-  Future<void> sendPaymentRequest(
-      {required req_time,
+  Future<PaymentModel> sendPaymentRequest(
+      {required int index,
+      required req_time,
       required tran_id,
       required firstname,
       required lastname,
@@ -21,52 +29,75 @@ class Payment {
       required return_url,
       required continue_success_url,
       required return_params,
-      required view_type,
       required payment_option}) async {
     final url = Uri.parse(
         "https://checkout-sandbox.payway.com.kh/api/payment-gateway/v1/payments/purchase");
 
     String hashMsg =
-        "$req_time$merchantId$tran_id$firstname$lastname$email$phone$amount$payment_option$return_url$continue_success_url$return_params$view_type";
+        "$req_time$merchantId$tran_id$amount$firstname$lastname$email$phone$payment_option$return_url$continue_success_url$return_params";
     String secret = 'e2f18ec6-462a-4fab-816b-9a3630a82e18';
 
     List<int> hashUnEnc =
         Hmac(sha512, utf8.encode(secret)).convert(utf8.encode(hashMsg)).bytes;
     String hashV = base64.encode(hashUnEnc);
+    try {
+      SmartDialog.showLoading(
+        animationBuilder: (controller, child, animationParam) {
+          return Loading(
+            text: 'Please wait...',
+          );
+        },
+      );
+      final Map<String, dynamic> requestBody = {
+        'req_time': req_time,
+        'merchant_id': merchantId,
+        'tran_id': tran_id,
+        'firstname': firstname,
+        'lastname': lastname,
+        'email': email,
+        'phone': phone,
+        'amount': amount,
+        'payment_option': payment_option,
+        'return_url': return_url,
+        'continue_success_url': continue_success_url,
+        'return_params': return_params,
+        'hash': hashV,
+      };
 
-    print(hashV.toString() + 'hash');
+      final response = await http.post(
+        url,
+        body: requestBody,
+      );
+      if (response.statusCode == 200) {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .update({
+          'payDate': DateTime.now().toString(),
+          'payStatus': index == 0 ? 'monthly' : 'yearly',
+          'expireDate': index == 0
+              ? DateTime.now().add(const Duration(days: 30)).toString()
+              : DateTime.now().add(const Duration(days: 365)).toString(),
+        });
+        print('Request successful');
+        print('Response: ${response.body}');
 
-    final Map<String, String> requestBody = {
-      'req_time': req_time,
-      'merchant_id': merchantId,
-      'tran_id': tran_id,
-      'firstname': firstname,
-      'lastname': lastname,
-      'email': email,
-      'phone': phone,
-      'amount': amount,
-      'type': 'purchase',
-      'payment_option': payment_option,
-      'return_url': return_url,
-      'continue_success_url': continue_success_url,
-      'return_params': return_params,
-      'view_type': view_type,
-      'hash': hashV,
-    };
+        SmartDialog.dismiss();
+        var payment = PaymentModel.fromJson(response.body);
+        Get.to(() => QRCode(
+              qrData: payment.qr_string!,
+            ));
 
-    final response = await http.post(
-      url,
-      body: requestBody,
-    );
-
-    if (response.statusCode == 200) {
-      print('Request successful');
-      print('Response: ${response.body}');
-      // You can handle the response here
-    } else {
-      print('Request failed with status code: ${response.statusCode}');
-      print('Response: ${response.body}');
-      // You can handle errors here
+        return payment;
+      } else {
+        Fluttertoast.showToast(msg: response.body);
+        SmartDialog.dismiss();
+      }
+    } catch (e) {
+      return PaymentModel();
+    } finally {
+      SmartDialog.dismiss();
+      return PaymentModel();
     }
   }
 

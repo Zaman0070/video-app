@@ -62,8 +62,8 @@ const String defaultGooglePay = '''{
       }
     ],
     "merchantInfo": {
-      "merchantId": "01234567890123456789",
-      "merchantName": "Example Merchant Name"
+      "merchantId": "BCR2DN4TTHS5X4ZT",
+      "merchantName": "KONG Meas"
     },
     "transactionInfo": {
       "countryCode": "US",
@@ -90,7 +90,7 @@ const String basicGooglePayLoadPaymentData = '''{
   "apiVersion": 2,
   "apiVersionMinor": 0,
   "merchantInfo": {
-    "merchantName": "Example Merchant"
+    "merchantName": "KONG Meas"
   },
   "allowedPaymentMethods": [
     {
@@ -130,7 +130,7 @@ const String invalidGooglePayLoadPaymentData = '''{
   "apiVersion": 2,
   "apiVersionMinor": 0,
   "merchantInfo": {
-    "merchantName": "Example Merchant"
+    "merchantName": "KONG Meas"
   },
   "allowedPaymentMethods": [
     {
