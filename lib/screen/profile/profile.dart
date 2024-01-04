@@ -13,7 +13,6 @@ import 'package:video_app/screen/bottom_nav/bottom_nav.dart';
 import 'package:video_app/screen/profile/widget/language_bottom.dart';
 import 'package:video_app/screen/profile/widget/profile_box.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:video_app/screen/subscription/subscription_page.dart';
 import 'package:video_app/screen/watch_list/watch_list.dart';
 
 class Profile extends StatelessWidget {
@@ -39,7 +38,7 @@ class Profile extends StatelessWidget {
                     .snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.data == null) {
-                    return Text('');
+                    return const Text('');
                   }
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(
@@ -109,20 +108,10 @@ class Profile extends StatelessWidget {
                       ),
                       ProfileBox(
                         onTap: () {
-                          Get.to(() => WatchList());
+                          Get.to(() => const WatchList());
                         },
                         title: 'Watch List'.tr,
                         image: 'assets/icons/history.png',
-                      ),
-                      SizedBox(
-                        height: 12.h,
-                      ),
-                      ProfileBox(
-                        onTap: () async {
-                          Get.to(() => const SubscriptionPage());
-                        },
-                        title: 'Subscription'.tr,
-                        image: 'assets/icons/cash.png',
                       ),
                       SizedBox(
                         height: 12.h,

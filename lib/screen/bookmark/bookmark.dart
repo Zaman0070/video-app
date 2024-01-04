@@ -12,7 +12,6 @@ import 'package:video_app/controller/ads_controller.dart';
 import 'package:video_app/helper/ads.dart';
 import 'package:video_app/model/user_model.dart';
 import 'package:video_app/model/video.dart';
-import 'package:video_app/screen/auth/login.dart';
 import 'package:video_app/screen/home/widget/home_box.dart';
 import 'package:video_app/services/firebase_services.dart';
 
@@ -147,24 +146,19 @@ class _BookMarkState extends State<BookMark> {
                     viewCount: videoModel.watchList!.length,
                     id: snapshot.data!.docs[index].id,
                     onTap: () async {
-                      if (videoModel.paid == 'paid' &&
-                          FirebaseAuth.instance.currentUser == null) {
-                        Get.to(() => const Login());
-                      } else {
-                        Get.to(() => ShowVideo(
-                              showAd: shouldShowAds,
-                              videoUrl: videoModel.videoUrl!,
-                            ));
-                        FirebaseAuth.instance.currentUser == null
-                            ? null
-                            : await _firebaseServices.addWatchList(
-                                postId: snapshot.data!.docs[index].id,
-                                uid: FirebaseAuth.instance.currentUser!.uid,
-                                context: context);
-                        !shouldShowAds
-                            ? AdHelper.showRewardedAd(onComplete: () {})
-                            : null;
-                      }
+                      Get.to(() => ShowVideo(
+                            showAd: shouldShowAds,
+                            videoUrl: videoModel.videoUrl!,
+                          ));
+                      FirebaseAuth.instance.currentUser == null
+                          ? null
+                          : await _firebaseServices.addWatchList(
+                              postId: snapshot.data!.docs[index].id,
+                              uid: FirebaseAuth.instance.currentUser!.uid,
+                              context: context);
+                      !shouldShowAds
+                          ? AdHelper.showRewardedAd(onComplete: () {})
+                          : null;
                     },
                     videoModel: videoModel,
                   );

@@ -87,9 +87,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                         : snapshot.data!['all'],
                     index: index,
                   ),
-                  const SizedBox(
-                    height: 30,
-                  ),
+                  const SizedBox(height: 30),
                 ],
               ),
             );

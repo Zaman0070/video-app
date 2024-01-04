@@ -11,9 +11,7 @@ import 'package:video_app/controller/ads_controller.dart';
 import 'package:video_app/helper/ads.dart';
 import 'package:video_app/model/user_model.dart';
 import 'package:video_app/model/video.dart';
-import 'package:video_app/screen/auth/login.dart';
 import 'package:video_app/screen/home/widget/home_box.dart';
-import 'package:video_app/screen/subscription/subscription_page.dart';
 import 'package:video_app/services/firebase_services.dart';
 
 // ignore: must_be_immutable
@@ -132,38 +130,19 @@ class _PopularListState extends State<PopularList> {
                     viewCount: videoModel.watchList!.length,
                     id: snapshot.data!.docs[videoIndex].id,
                     onTap: () async {
-                      if (videoModel.paid == 'unpaid') {
-                        Get.to(() => ShowVideo(
-                              showAd: shouldShowAds,
-                              videoUrl: videoModel.videoUrl!,
-                            ));
-                        FirebaseAuth.instance.currentUser != null
-                            ? await _firebaseServices.addWatchList(
-                                postId: snapshot.data!.docs[videoIndex].id,
-                                uid: FirebaseAuth.instance.currentUser!.uid,
-                                context: context)
-                            : null;
-                        !shouldShowAds
-                            ? AdHelper.showRewardedAd(onComplete: () {})
-                            : null;
-                      } else if (videoModel.paid == 'paid' && !shouldShowAds) {
-                        if (FirebaseAuth.instance.currentUser == null) {
-                          Get.to(() => const Login());
-                        } else {
-                          Get.to(() => const SubscriptionPage());
-                        }
-                      } else if (videoModel.paid == 'paid' && shouldShowAds) {
-                        Get.to(() => ShowVideo(
-                              showAd: shouldShowAds,
-                              videoUrl: videoModel.videoUrl!,
-                            ));
-                        FirebaseAuth.instance.currentUser != null
-                            ? await _firebaseServices.addWatchList(
-                                postId: snapshot.data!.docs[videoIndex].id,
-                                uid: FirebaseAuth.instance.currentUser!.uid,
-                                context: context)
-                            : null;
-                      }
+                      Get.to(() => ShowVideo(
+                            showAd: shouldShowAds,
+                            videoUrl: videoModel.videoUrl!,
+                          ));
+                      FirebaseAuth.instance.currentUser != null
+                          ? await _firebaseServices.addWatchList(
+                              postId: snapshot.data!.docs[videoIndex].id,
+                              uid: FirebaseAuth.instance.currentUser!.uid,
+                              context: context)
+                          : null;
+                      !shouldShowAds
+                          ? AdHelper.showRewardedAd(onComplete: () {})
+                          : null;
                     },
                     videoModel: videoModel,
                   );
